@@ -50,7 +50,7 @@
         <div id="upload-section" class="card mb-8">
             <label for="csvFileInput" class="block text-lg font-medium text-gray-700 mb-2">Langkah 1: Muat Naik Fail Laporan (CSV)</label>
             <input type="file" id="csvFileInput" accept=".csv" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
-            <p id="file-info" class="mt-2 text-sm text-gray-500">Sila pastikan fail anda dalam format CSV.</p>
+            <p id="file-info" class="mt-2 text-sm text-gray-500">Sila pastikan fail anda dalam format CSV yang betul.</p>
         </div>
 
         <!-- Dashboard Content - Hidden by default -->
@@ -115,63 +115,82 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            // Element selectors
             const csvFileInput = document.getElementById('csvFileInput');
             const fileInfo = document.getElementById('file-info');
             const dashboardContent = document.getElementById('dashboard-content');
             const subjectSelector = document.getElementById('subject-selector');
             const studentSelector = document.getElementById('student-selector');
 
+            // State variables
             let pieChart, barChart, radarChart;
             let allData = [];
             let subjects = [];
 
             const TP_COLORS = { 'TP1': '#ef4444', 'TP2': '#f97316', 'TP3': '#eab308', 'TP4': '#84cc16', 'TP5': '#22c55e', 'TP6': '#3b82f6', 'N/A': '#9ca3af' };
 
+            // Event listener for file input
             csvFileInput.addEventListener('change', (event) => {
                 const file = event.target.files[0];
                 if (!file) return;
 
                 fileInfo.textContent = `Memproses fail: ${file.name}...`;
+                
+                // Reset dashboard before processing new file
+                resetDashboard();
 
                 Papa.parse(file, {
                     header: true,
                     skipEmptyLines: true,
+                    dynamicTyping: true,
+                    transformHeader: header => header.trim(),
                     complete: (results) => {
-                        allData = results.data;
-                        const headers = results.meta.fields;
-                        
-                        // Dynamically identify subject columns
-                        subjects = headers.filter(key => 
+                        // --- DATA VALIDATION ---
+                        if (!results.meta.fields.includes('Nama Murid')) {
+                            fileInfo.textContent = 'Ralat: Fail CSV mesti mempunyai lajur "Nama Murid". Sila betulkan fail dan cuba lagi.';
+                            return;
+                        }
+
+                        allData = results.data.filter(row => row['Nama Murid'] && String(row['Nama Murid']).trim() !== '');
+
+                        if (allData.length === 0) {
+                            fileInfo.textContent = 'Ralat: Tiada data murid yang sah ditemui dalam fail.';
+                            return;
+                        }
+
+                        subjects = results.meta.fields.filter(key => 
                             key && !['Bil', 'Nama Murid', 'Catatan Kekuatan', 'Cadangan Tindakan'].includes(key.trim())
                         );
 
-                        if (allData.length > 0 && subjects.length > 0) {
-                            fileInfo.textContent = `Fail "${file.name}" berjaya diproses. ${allData.length} rekod murid ditemui.`;
-                            initializeDashboard();
-                        } else {
-                            fileInfo.textContent = 'Gagal memproses fail. Pastikan format CSV betul dan mengandungi data.';
-                            dashboardContent.classList.add('hidden');
+                        if (subjects.length === 0) {
+                            fileInfo.textContent = 'Ralat: Tiada lajur subjek yang sah ditemui. Sila semak tajuk lajur dalam fail anda.';
+                            return;
                         }
+
+                        // --- INITIALIZATION ---
+                        fileInfo.textContent = `Fail "${file.name}" berjaya diproses. ${allData.length} rekod murid ditemui.`;
+                        initializeDashboard();
                     },
                     error: (error) => {
                         console.error("CSV Parsing Error:", error);
-                        fileInfo.textContent = 'Ralat berlaku semasa membaca fail CSV. Sila semak format fail anda.';
-                        dashboardContent.classList.add('hidden');
+                        fileInfo.textContent = 'Ralat berlaku semasa membaca fail CSV. Sila pastikan ia adalah fail CSV yang sah.';
                     }
                 });
             });
 
-            function destroyCharts() {
+            function resetDashboard() {
+                dashboardContent.classList.add('hidden');
                 if (pieChart) pieChart.destroy();
                 if (barChart) barChart.destroy();
                 if (radarChart) radarChart.destroy();
-                pieChart = null;
-                barChart = null;
-                radarChart = null;
+                pieChart = barChart = radarChart = null;
+                allData = [];
+                subjects = [];
+                studentSelector.innerHTML = '';
+                subjectSelector.innerHTML = '';
             }
 
             function initializeDashboard() {
-                destroyCharts(); // Clear previous charts before initializing
                 dashboardContent.classList.remove('hidden');
                 
                 populateStudentSelector();
@@ -212,12 +231,12 @@
                     }]
                 };
 
-                if (!pieChart) {
-                    const ctx = document.getElementById('pie-chart').getContext('2d');
-                    pieChart = new Chart(ctx, { type: 'pie', data: chartData, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { padding: 15 } } } } });
-                } else {
+                if (pieChart) {
                     pieChart.data = chartData;
                     pieChart.update();
+                } else {
+                    const ctx = document.getElementById('pie-chart').getContext('2d');
+                    pieChart = new Chart(ctx, { type: 'pie', data: chartData, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { padding: 15 } } } } });
                 }
 
                 const totalStudents = allData.length;
@@ -284,12 +303,12 @@
                     }]
                 };
 
-                if (!radarChart) {
-                    const ctx = document.getElementById('student-radar-chart').getContext('2d');
-                    radarChart = new Chart(ctx, { type: 'radar', data: chartData, options: { responsive: true, maintainAspectRatio: false, elements: { line: { borderWidth: 3 } }, scales: { r: { angleLines: { display: true }, suggestedMin: 0, suggestedMax: 6, pointLabels: { font: {size: 10} } } } } });
-                } else {
+                if (radarChart) {
                     radarChart.data = chartData;
                     radarChart.update();
+                } else {
+                    const ctx = document.getElementById('student-radar-chart').getContext('2d');
+                    radarChart = new Chart(ctx, { type: 'radar', data: chartData, options: { responsive: true, maintainAspectRatio: false, elements: { line: { borderWidth: 3 } }, scales: { r: { angleLines: { display: true }, suggestedMin: 0, suggestedMax: 6, pointLabels: { font: {size: 10} } } } } });
                 }
             }
 
