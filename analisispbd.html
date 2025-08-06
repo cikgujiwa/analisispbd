@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Analisis Pencapaian Murid</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/papaparse/5.3.2/papaparse.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+        }
+        .chart-container {
+            position: relative;
+            height: 400px;
+            width: 100%;
+        }
+        .card {
+            background-color: white;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            padding: 1.5rem;
+            transition: all 0.3s ease-in-out;
+        }
+        .summary-list li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        .summary-list li:last-child {
+            border-bottom: none;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body class="text-gray-800 p-4 sm:p-6 lg:p-8">
+
+    <div class="max-w-7xl mx-auto">
+        <!-- Header -->
+        <header class="mb-8 text-center">
+            <h1 class="text-4xl font-bold text-gray-900">Dashboard Analisis Pencapaian Murid</h1>
+            <p class="mt-2 text-lg text-gray-600">Muat naik fail CSV anda untuk memulakan analisis.</p>
+        </header>
+
+        <!-- File Upload Section -->
+        <div id="upload-section" class="card mb-8">
+            <label for="csvFileInput" class="block text-lg font-medium text-gray-700 mb-2">Langkah 1: Muat Naik Fail Laporan (CSV)</label>
+            <input type="file" id="csvFileInput" accept=".csv" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+            <p id="file-info" class="mt-2 text-sm text-gray-500">Sila pastikan fail anda dalam format CSV.</p>
+        </div>
+
+        <!-- Dashboard Content - Hidden by default -->
+        <div id="dashboard-content" class="hidden">
+
+            <!-- Student Analysis Section -->
+            <div class="mb-10">
+                <h2 class="text-3xl font-bold text-gray-800 mb-4">Analisis Peringkat Murid</h2>
+                <div class="card">
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                        <div class="lg:col-span-1">
+                             <label for="student-selector" class="block text-lg font-medium text-gray-700 mb-2">Pilih Murid</label>
+                            <select id="student-selector" class="w-full p-3 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 mb-6"></select>
+                            
+                            <h3 class="text-xl font-semibold text-gray-800 mb-4">Laporan Prestasi Individu</h3>
+                            <div id="student-summary" class="space-y-4 text-gray-700"></div>
+                        </div>
+                        <div class="lg:col-span-2">
+                             <h3 class="text-xl font-semibold text-gray-800 mb-4">Profil Penguasaan Subjek</h3>
+                            <div class="chart-container">
+                                <canvas id="student-radar-chart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Divider -->
+            <hr class="my-12 border-gray-300 border-dashed">
+
+            <!-- Class Analysis Section -->
+            <div class="mb-8">
+                <h2 class="text-3xl font-bold text-gray-800 mb-4">Analisis Peringkat Kelas</h2>
+                <div class="mb-6 card">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-4">Rumusan Keseluruhan Kelas</h3>
+                    <div id="overall-summary" class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center"></div>
+                </div>
+                <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
+                    <div class="lg:col-span-2 space-y-6">
+                        <div class="card">
+                            <label for="subject-selector" class="block text-lg font-medium text-gray-700 mb-2">Pilih Subjek</label>
+                            <select id="subject-selector" class="w-full p-3 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"></select>
+                        </div>
+                        <div class="card">
+                            <h3 class="text-xl font-semibold text-gray-800 mb-4">Pecahan TP Subjek</h3>
+                            <div class="chart-container" style="height:300px">
+                                <canvas id="pie-chart"></canvas>
+                            </div>
+                            <p id="subject-pie-summary" class="text-center mt-4 text-gray-600 text-sm"></p>
+                        </div>
+                    </div>
+                    <div class="lg:col-span-3 card">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-4">Perbandingan Penguasaan Merentas Subjek</h3>
+                        <div class="chart-container">
+                            <canvas id="bar-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const csvFileInput = document.getElementById('csvFileInput');
+            const fileInfo = document.getElementById('file-info');
+            const dashboardContent = document.getElementById('dashboard-content');
+            const subjectSelector = document.getElementById('subject-selector');
+            const studentSelector = document.getElementById('student-selector');
+
+            let pieChart, barChart, radarChart;
+            let allData = [];
+            let subjects = [];
+
+            const TP_COLORS = { 'TP1': '#ef4444', 'TP2': '#f97316', 'TP3': '#eab308', 'TP4': '#84cc16', 'TP5': '#22c55e', 'TP6': '#3b82f6', 'N/A': '#9ca3af' };
+
+            csvFileInput.addEventListener('change', (event) => {
+                const file = event.target.files[0];
+                if (!file) return;
+
+                fileInfo.textContent = `Memproses fail: ${file.name}...`;
+
+                Papa.parse(file, {
+                    header: true,
+                    skipEmptyLines: true,
+                    complete: (results) => {
+                        allData = results.data;
+                        const headers = results.meta.fields;
+                        
+                        // Dynamically identify subject columns
+                        subjects = headers.filter(key => 
+                            key && !['Bil', 'Nama Murid', 'Catatan Kekuatan', 'Cadangan Tindakan'].includes(key.trim())
+                        );
+
+                        if (allData.length > 0 && subjects.length > 0) {
+                            fileInfo.textContent = `Fail "${file.name}" berjaya diproses. ${allData.length} rekod murid ditemui.`;
+                            initializeDashboard();
+                        } else {
+                            fileInfo.textContent = 'Gagal memproses fail. Pastikan format CSV betul dan mengandungi data.';
+                            dashboardContent.classList.add('hidden');
+                        }
+                    },
+                    error: (error) => {
+                        console.error("CSV Parsing Error:", error);
+                        fileInfo.textContent = 'Ralat berlaku semasa membaca fail CSV. Sila semak format fail anda.';
+                        dashboardContent.classList.add('hidden');
+                    }
+                });
+            });
+
+            function destroyCharts() {
+                if (pieChart) pieChart.destroy();
+                if (barChart) barChart.destroy();
+                if (radarChart) radarChart.destroy();
+                pieChart = null;
+                barChart = null;
+                radarChart = null;
+            }
+
+            function initializeDashboard() {
+                destroyCharts(); // Clear previous charts before initializing
+                dashboardContent.classList.remove('hidden');
+                
+                populateStudentSelector();
+                populateSubjectSelector();
+                updateOverallSummary();
+                createBarChart();
+                updatePieChart(subjects[0]);
+                updateStudentView(allData[0]);
+            }
+            
+            studentSelector.addEventListener('change', (event) => updateStudentView(allData[event.target.value]));
+            subjectSelector.addEventListener('change', (event) => updatePieChart(event.target.value));
+
+            function populateStudentSelector() {
+                studentSelector.innerHTML = allData.map((student, index) => `<option value="${index}">${student.Bil || (index + 1)}. ${student['Nama Murid']}</option>`).join('');
+            }
+            function populateSubjectSelector() {
+                subjectSelector.innerHTML = subjects.map(subject => `<option value="${subject}">${subject}</option>`).join('');
+            }
+            
+            function getTpCounts(data, subject) {
+                return data.reduce((acc, row) => {
+                    const tpKey = `TP${row[subject]?.toString().trim()}` || 'N/A';
+                    acc[tpKey] = (acc[tpKey] || 0) + 1;
+                    return acc;
+                }, { 'TP1': 0, 'TP2': 0, 'TP3': 0, 'TP4': 0, 'TP5': 0, 'TP6': 0, 'N/A': 0 });
+            }
+
+            function updatePieChart(subject) {
+                const tpCounts = getTpCounts(allData, subject);
+                const chartData = {
+                    labels: Object.keys(tpCounts).filter(tp => tpCounts[tp] > 0),
+                    datasets: [{
+                        data: Object.values(tpCounts).filter(count => count > 0),
+                        backgroundColor: Object.keys(tpCounts).filter(tp => tpCounts[tp] > 0).map(tp => TP_COLORS[tp] || TP_COLORS['N/A']),
+                        borderColor: '#fff',
+                        borderWidth: 2
+                    }]
+                };
+
+                if (!pieChart) {
+                    const ctx = document.getElementById('pie-chart').getContext('2d');
+                    pieChart = new Chart(ctx, { type: 'pie', data: chartData, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { padding: 15 } } } } });
+                } else {
+                    pieChart.data = chartData;
+                    pieChart.update();
+                }
+
+                const totalStudents = allData.length;
+                const achievedMinimum = totalStudents - (tpCounts['TP1'] + tpCounts['TP2']);
+                const percentageAchieved = totalStudents > 0 ? ((achievedMinimum / totalStudents) * 100).toFixed(1) : 0;
+                document.getElementById('subject-pie-summary').innerHTML = `Bagi subjek <strong>${subject}</strong>, <strong>${percentageAchieved}%</strong> murid telah mencapai tahap penguasaan minimum (TP3 dan ke atas).`;
+            }
+
+            function createBarChart() {
+                const tpLevels = ['TP1', 'TP2', 'TP3', 'TP4', 'TP5', 'TP6'];
+                const datasets = tpLevels.map(tp => ({
+                    label: tp,
+                    data: subjects.map(subject => getTpCounts(allData, subject)[tp] || 0),
+                    backgroundColor: TP_COLORS[tp],
+                }));
+
+                const chartData = {
+                    labels: subjects.map(s => s.replace('Pendidikan ', 'P. ').replace('dan Pendidikan Kesihatan', '& PK').replace('Reka Bentuk dan Teknologi', 'RBT')),
+                    datasets: datasets
+                };
+
+                const ctx = document.getElementById('bar-chart').getContext('2d');
+                barChart = new Chart(ctx, {
+                    type: 'bar', data: chartData,
+                    options: { responsive: true, maintainAspectRatio: false, scales: { x: { stacked: true, ticks: { autoSkip: false, maxRotation: 45, minRotation: 45 } }, y: { stacked: true, beginAtZero: true, title: { display: true, text: 'Bilangan Murid' } } } }
+                });
+            }
+            
+            function updateOverallSummary() {
+                const summaryContainer = document.getElementById('overall-summary');
+                const totalStudents = allData.length;
+                const subjectAverages = subjects.map(subject => {
+                    const tps = allData.map(row => parseInt(row[subject], 10)).filter(tp => !isNaN(tp));
+                    return { subject, average: tps.length > 0 ? tps.reduce((a, b) => a + b, 0) / tps.length : 0 };
+                });
+
+                const overallAverage = (subjectAverages.reduce((acc, s) => acc + s.average, 0) / subjectAverages.length).toFixed(2);
+                const sortedSubjects = [...subjectAverages].sort((a, b) => b.average - a.average);
+                const bestSubject = sortedSubjects[0];
+                const worstSubject = sortedSubjects[sortedSubjects.length - 1];
+
+                summaryContainer.innerHTML = [
+                    { label: 'Jumlah Murid', value: totalStudents, icon: '👥' },
+                    { label: 'Purata TP Keseluruhan', value: overallAverage, icon: '📊' },
+                    { label: 'Subjek Prestasi Tertinggi', value: `${bestSubject.subject.split(' ')[0]} (Avg: ${bestSubject.average.toFixed(2)})`, icon: '🏆' },
+                    { label: 'Subjek Perlu Perhatian', value: `${worstSubject.subject.split(' ')[0]} (Avg: ${worstSubject.average.toFixed(2)})`, icon: '🚩' }
+                ].map(item => `<div class="bg-gray-50 p-4 rounded-lg"><div class="text-4xl">${item.icon}</div><p class="text-sm text-gray-500 mt-2">${item.label}</p><p class="text-xl font-bold text-gray-900">${item.value}</p></div>`).join('');
+            }
+
+            function updateStudentView(studentData) {
+                if (!studentData) return;
+                updateStudentRadarChart(studentData);
+                updateStudentSummary(studentData);
+            }
+
+            function updateStudentRadarChart(studentData) {
+                const studentTps = subjects.map(subject => parseInt(studentData[subject], 10) || 0);
+                const chartData = {
+                    labels: subjects.map(s => s.replace('Pendidikan ', 'P. ').replace('dan Pendidikan Kesihatan', '& PK').replace('Reka Bentuk dan Teknologi', 'RBT')),
+                    datasets: [{
+                        label: `TP ${studentData['Nama Murid'].split(' ')[0]}`,
+                        data: studentTps, fill: true, backgroundColor: 'rgba(59, 130, 246, 0.2)', borderColor: 'rgb(59, 130, 246)',
+                        pointBackgroundColor: 'rgb(59, 130, 246)', pointBorderColor: '#fff', pointHoverBackgroundColor: '#fff', pointHoverBorderColor: 'rgb(59, 130, 246)'
+                    }]
+                };
+
+                if (!radarChart) {
+                    const ctx = document.getElementById('student-radar-chart').getContext('2d');
+                    radarChart = new Chart(ctx, { type: 'radar', data: chartData, options: { responsive: true, maintainAspectRatio: false, elements: { line: { borderWidth: 3 } }, scales: { r: { angleLines: { display: true }, suggestedMin: 0, suggestedMax: 6, pointLabels: { font: {size: 10} } } } } });
+                } else {
+                    radarChart.data = chartData;
+                    radarChart.update();
+                }
+            }
+
+            function updateStudentSummary(studentData) {
+                const summaryContainer = document.getElementById('student-summary');
+                const tps = subjects.map(subject => ({ subject, tp: parseInt(studentData[subject], 10) || 0 }));
+                
+                const validTps = tps.filter(item => item.tp > 0);
+                if (validTps.length === 0) {
+                    summaryContainer.innerHTML = `<p>Tiada data TP untuk murid ini.</p>`;
+                    return;
+                }
+                
+                const average = (validTps.reduce((a, b) => a + b.tp, 0) / validTps.length).toFixed(2);
+                
+                const strengths = validTps.filter(s => s.tp >= 5);
+                const needsAttention = validTps.filter(s => s.tp < 3);
+
+                let summaryHTML = `
+                    <p class="text-lg"><span class="font-semibold">Nama Murid:</span><br>${studentData['Nama Murid']}</p>
+                    <p><span class="font-semibold">Purata Keseluruhan:</span> <span class="font-bold text-xl text-blue-600">${average}</span></p>
+                    <div class="mt-4">
+                        <h4 class="font-semibold text-md text-green-600">Kekuatan Utama (TP5 ke atas):</h4>
+                        <ul class="list-disc list-inside text-sm summary-list">
+                            ${strengths.length > 0 ? strengths.map(s => `<li>${s.subject} (TP${s.tp})</li>`).join('') : '<li>Tiada subjek dengan TP5 ke atas.</li>'}
+                        </ul>
+                    </div>
+                    <div class="mt-4">
+                        <h4 class="font-semibold text-md text-red-600">Aspek Perlu Perhatian (TP di bawah 3):</h4>
+                        <ul class="list-disc list-inside text-sm summary-list">
+                             ${needsAttention.length > 0 ? needsAttention.map(s => `<li>${s.subject} (TP${s.tp})</li>`).join('') : '<li>Syabas! Semua subjek mencapai tahap penguasaan minimum.</li>'}
+                        </ul>
+                    </div>
+                     <div class="mt-6 p-3 bg-blue-50 rounded-lg">
+                        <h4 class="font-semibold text-md text-blue-800">Cadangan Intervensi:</h4>
+                        <p class="text-sm mt-1">
+                            ${needsAttention.length > 0 
+                                ? `Beri fokus tambahan kepada subjek <strong>${needsAttention.map(s=>s.subject).join(', ')}</strong>. Sediakan latihan topikal dan galakkan pembelajaran bersama rakan yang lebih mahir.`
+                                : `Teruskan momentum cemerlang. Galakkan murid untuk meneroka topik lanjutan atau menyertai pertandingan berkaitan subjek kekuatan.`
+                            }
+                        </p>
+                    </div>
+                `;
+                summaryContainer.innerHTML = summaryHTML;
+            }
+        });
+    </script>
+</body>
+</html>
