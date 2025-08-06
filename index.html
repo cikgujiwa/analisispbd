@@ -3,9 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Analisis - Kemasukan Data Manual</title>
+    <title>Dashboard Analisis - Muat Naik Excel</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Library untuk membaca fail Excel -->
+    <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body {
@@ -24,26 +26,17 @@
             padding: 1.5rem;
         }
         .hidden { display: none; }
-        input[type="number"] {
-            -moz-appearance: textfield;
-        }
-        input::-webkit-outer-spin-button,
-        input::-webkit-inner-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
-        }
-        .delete-btn {
-            background-color: #fee2e2;
-            color: #b91c1c;
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
             border-radius: 50%;
             width: 24px;
             height: 24px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            border: none;
-            font-weight: bold;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
     </style>
 </head>
@@ -53,54 +46,24 @@
         <!-- Header -->
         <header class="mb-8 text-center">
             <h1 class="text-4xl font-bold text-gray-900">Dashboard Analisis Pencapaian Murid</h1>
-            <p class="mt-2 text-lg text-gray-600">Masukkan data murid secara manual untuk menjana analisis.</p>
+            <p class="mt-2 text-lg text-gray-600">Muat naik fail Excel anda untuk memulakan analisis.</p>
         </header>
 
-        <!-- Data Entry Section -->
-        <div class="card mb-8">
-            <h2 class="text-2xl font-bold text-gray-800 mb-4">Langkah 1: Tambah Data Murid</h2>
-            <form id="add-student-form" class="space-y-4">
-                <div>
-                    <label for="studentName" class="block text-sm font-medium text-gray-700">Nama Penuh Murid</label>
-                    <input type="text" id="studentName" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" required>
-                </div>
-                <div id="subject-inputs" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                    <!-- Subject inputs will be generated here -->
-                </div>
-                <button type="submit" class="w-full bg-blue-600 text-white font-bold py-2 px-4 rounded-md hover:bg-blue-700 transition-colors">Tambah Murid ke Senarai</button>
-            </form>
-        </div>
-
-        <!-- Student List Table -->
-        <div class="card mb-8">
-            <h2 class="text-2xl font-bold text-gray-800 mb-4">Senarai Murid Dimasukkan</h2>
-            <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-gray-50">
-                        <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Bil</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama Murid</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Purata TP</th>
-                            <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Tindakan</th>
-                        </tr>
-                    </thead>
-                    <tbody id="student-list-body" class="bg-white divide-y divide-gray-200">
-                        <tr id="no-student-row">
-                            <td colspan="4" class="px-6 py-4 text-center text-gray-500">Tiada data murid dimasukkan lagi.</td>
-                        </tr>
-                    </tbody>
-                </table>
+        <!-- File Upload Section -->
+        <div id="upload-section" class="card mb-8">
+            <label for="excelFileInput" class="block text-lg font-medium text-gray-700 mb-2">Langkah 1: Muat Naik Fail Laporan (Excel)</label>
+            <input type="file" id="excelFileInput" accept=".xlsx, .xls" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100">
+            <div id="processing-indicator" class="hidden flex items-center mt-4">
+                <div class="loader mr-3"></div>
+                <span id="file-info" class="text-sm text-gray-500">Memproses fail, sila tunggu...</span>
             </div>
         </div>
 
-
-        <!-- Dashboard Content - Hidden until data exists -->
+        <!-- Dashboard Content - Hidden by default -->
         <div id="dashboard-content" class="hidden">
-            <hr class="my-12 border-gray-300 border-dashed">
-            <h2 class="text-3xl font-bold text-gray-800 mb-4 text-center">Langkah 2: Analisis Data</h2>
             <!-- Student Analysis Section -->
             <div class="mb-10">
-                <h3 class="text-2xl font-semibold text-gray-800 mb-4">Analisis Peringkat Murid</h3>
+                <h2 class="text-3xl font-bold text-gray-800 mb-4">Analisis Peringkat Murid</h2>
                 <div class="card">
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                         <div class="lg:col-span-1">
@@ -118,11 +81,14 @@
                 </div>
             </div>
 
+            <!-- Divider -->
+            <hr class="my-12 border-gray-300 border-dashed">
+
             <!-- Class Analysis Section -->
             <div class="mb-8">
-                <h3 class="text-2xl font-semibold text-gray-800 mb-4">Analisis Peringkat Kelas</h3>
+                <h2 class="text-3xl font-bold text-gray-800 mb-4">Analisis Peringkat Kelas</h2>
                 <div class="mb-6 card">
-                    <h4 class="text-xl font-semibold text-gray-800 mb-4">Rumusan Keseluruhan Kelas</h4>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-4">Rumusan Keseluruhan Kelas</h3>
                     <div id="overall-summary" class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center"></div>
                 </div>
                 <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
@@ -132,7 +98,7 @@
                             <select id="subject-selector" class="w-full p-3 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"></select>
                         </div>
                         <div class="card">
-                            <h4 class="text-xl font-semibold text-gray-800 mb-4">Pecahan TP Subjek</h4>
+                            <h3 class="text-xl font-semibold text-gray-800 mb-4">Pecahan TP Subjek</h3>
                             <div class="chart-container" style="height:300px">
                                 <canvas id="pie-chart"></canvas>
                             </div>
@@ -140,7 +106,7 @@
                         </div>
                     </div>
                     <div class="lg:col-span-3 card">
-                        <h4 class="text-xl font-semibold text-gray-800 mb-4">Perbandingan Penguasaan Merentas Subjek</h4>
+                        <h3 class="text-xl font-semibold text-gray-800 mb-4">Perbandingan Penguasaan Merentas Subjek</h3>
                         <div class="chart-container">
                             <canvas id="bar-chart"></canvas>
                         </div>
@@ -152,121 +118,82 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // --- GLOBAL STATE ---
-            let allData = [];
-            let subjects = [
-                'Bahasa Melayu', 'Bahasa Inggeris', 'Matematik', 'Sains', 'Sejarah',
-                'Pendidikan Islam', 'Pendidikan Seni Visual', 'Pendidikan Muzik', 'Bahasa Arab',
-                'Pendidikan Jasmani dan Pendidikan Kesihatan', 'Reka Bentuk dan Teknologi'
-            ];
-            let pieChart, barChart, radarChart;
-            const TP_COLORS = { 'TP1': '#ef4444', 'TP2': '#f97316', 'TP3': '#eab308', 'TP4': '#84cc16', 'TP5': '#22c55e', 'TP6': '#3b82f6', 'N/A': '#9ca3af' };
-
-            // --- ELEMENT SELECTORS ---
-            const addStudentForm = document.getElementById('add-student-form');
-            const subjectInputsContainer = document.getElementById('subject-inputs');
-            const studentListBody = document.getElementById('student-list-body');
-            const noStudentRow = document.getElementById('no-student-row');
+            const excelFileInput = document.getElementById('excelFileInput');
+            const processingIndicator = document.getElementById('processing-indicator');
+            const fileInfo = document.getElementById('file-info');
             const dashboardContent = document.getElementById('dashboard-content');
             const studentSelector = document.getElementById('student-selector');
             const subjectSelector = document.getElementById('subject-selector');
 
-            // --- INITIALIZATION ---
-            function generateSubjectInputs() {
-                subjectInputsContainer.innerHTML = subjects.map(subject => `
-                    <div>
-                        <label for="tp-${subject.replace(/\s+/g, '-')}" class="block text-sm font-medium text-gray-700">${subject}</label>
-                        <input type="number" id="tp-${subject.replace(/\s+/g, '-')}" data-subject="${subject}" min="1" max="6" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" required>
-                    </div>
-                `).join('');
-            }
-            generateSubjectInputs();
+            let pieChart, barChart, radarChart;
+            let allData = [];
+            let subjects = [];
 
-            // --- EVENT LISTENERS ---
-            addStudentForm.addEventListener('submit', (e) => {
-                e.preventDefault();
-                const studentName = document.getElementById('studentName').value.trim();
-                if (!studentName) {
-                    alert('Sila masukkan nama murid.');
-                    return;
-                }
+            const TP_COLORS = { 'TP1': '#ef4444', 'TP2': '#f97316', 'TP3': '#eab308', 'TP4': '#84cc16', 'TP5': '#22c55e', 'TP6': '#3b82f6', 'N/A': '#9ca3af' };
 
-                const newStudent = { 'Nama Murid': studentName, 'Bil': allData.length + 1 };
-                let isValid = true;
-                subjects.forEach(subject => {
-                    const input = document.getElementById(`tp-${subject.replace(/\s+/g, '-')}`);
-                    if (input.value) {
-                        newStudent[subject] = parseInt(input.value, 10);
-                    } else {
-                        isValid = false;
-                    }
-                });
+            excelFileInput.addEventListener('change', (event) => {
+                const file = event.target.files[0];
+                if (!file) return;
 
-                if (!isValid) {
-                    alert('Sila masukkan semua skor TP.');
-                    return;
-                }
-                
-                allData.push(newStudent);
-                updateStudentList();
-                refreshDashboard();
-                addStudentForm.reset();
-                document.getElementById('studentName').focus();
+                processingIndicator.classList.remove('hidden');
+                fileInfo.textContent = `Memproses fail: ${file.name}...`;
+                excelFileInput.disabled = true;
+
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    // Use a timeout to make the processing indicator visible
+                    setTimeout(() => {
+                        try {
+                            const data = new Uint8Array(e.target.result);
+                            const workbook = XLSX.read(data, { type: 'array' });
+                            const firstSheetName = workbook.SheetNames[0];
+                            const worksheet = workbook.Sheets[firstSheetName];
+                            const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+
+                            // Find header row and data
+                            const headerRowIndex = jsonData.findIndex(row => row.includes('Nama Murid'));
+                            if (headerRowIndex === -1) {
+                                throw new Error('Lajur "Nama Murid" tidak ditemui.');
+                            }
+                            
+                            const headers = jsonData[headerRowIndex].map(h => String(h).trim());
+                            const rawData = XLSX.utils.sheet_to_json(worksheet);
+
+                            allData = rawData.filter(row => row['Nama Murid'] && String(row['Nama Murid']).trim() !== '');
+                            subjects = headers.filter(key => key && !['Bil', 'Nama Murid', 'Catatan Kekuatan', 'Cadangan Tindakan'].includes(key));
+
+                            if (allData.length === 0 || subjects.length === 0) {
+                                throw new Error('Tiada data murid atau subjek yang sah ditemui.');
+                            }
+                            
+                            fileInfo.textContent = `Fail "${file.name}" berjaya diproses. ${allData.length} rekod murid ditemui.`;
+                            initializeDashboard();
+
+                        } catch (error) {
+                            console.error("Excel Processing Error:", error);
+                            fileInfo.textContent = `Ralat: ${error.message} Sila pastikan format fail Excel betul.`;
+                            dashboardContent.classList.add('hidden');
+                        } finally {
+                            processingIndicator.classList.add('hidden');
+                            excelFileInput.disabled = false;
+                        }
+                    }, 500); // 0.5 second delay for UX
+                };
+                reader.readAsArrayBuffer(file);
             });
 
-            studentSelector.addEventListener('change', (event) => updateStudentView(allData[event.target.value]));
-            subjectSelector.addEventListener('change', (event) => updatePieChart(event.target.value));
-
-            // --- DATA & UI UPDATES ---
-            function updateStudentList() {
-                noStudentRow.classList.add('hidden');
-                studentListBody.innerHTML = ''; // Clear list
-                allData.forEach((student, index) => {
-                    const tps = subjects.map(s => student[s]).filter(tp => !isNaN(tp));
-                    const average = tps.length > 0 ? (tps.reduce((a, b) => a + b, 0) / tps.length).toFixed(2) : 'N/A';
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${student.Bil}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${student['Nama Murid']}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${average}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                            <button class="delete-btn" data-index="${index}" title="Padam Murid">X</button>
-                        </td>
-                    `;
-                    studentListBody.appendChild(row);
-                });
-
-                // Add delete functionality
-                document.querySelectorAll('.delete-btn').forEach(btn => {
-                    btn.addEventListener('click', (e) => {
-                        const indexToRemove = parseInt(e.target.dataset.index, 10);
-                        allData.splice(indexToRemove, 1);
-                        // Re-number students
-                        allData.forEach((student, i) => student.Bil = i + 1);
-                        
-                        updateStudentList();
-                        refreshDashboard();
-                    });
-                });
+            function resetDashboard() {
+                dashboardContent.classList.add('hidden');
+                if (pieChart) pieChart.destroy();
+                if (barChart) barChart.destroy();
+                if (radarChart) radarChart.destroy();
+                pieChart = barChart = radarChart = null;
             }
 
-            function refreshDashboard() {
-                if (allData.length > 0) {
-                    dashboardContent.classList.remove('hidden');
-                    if (pieChart) { // Destroy old charts if they exist
-                        pieChart.destroy();
-                        barChart.destroy();
-                        radarChart.destroy();
-                    }
-                    initializeDashboard();
-                } else {
-                    dashboardContent.classList.add('hidden');
-                    noStudentRow.classList.remove('hidden');
-                }
-            }
-
-            // --- ANALYSIS FUNCTIONS (Re-used from previous version) ---
             function initializeDashboard() {
+                resetDashboard();
+                dashboardContent.classList.remove('hidden');
+                
                 populateStudentSelector();
                 populateSubjectSelector();
                 updateOverallSummary();
@@ -275,8 +202,11 @@
                 updateStudentView(allData[0]);
             }
             
+            studentSelector.addEventListener('change', (event) => updateStudentView(allData[event.target.value]));
+            subjectSelector.addEventListener('change', (event) => updatePieChart(event.target.value));
+
             function populateStudentSelector() {
-                studentSelector.innerHTML = allData.map((student, index) => `<option value="${index}">${student.Bil}. ${student['Nama Murid']}</option>`).join('');
+                studentSelector.innerHTML = allData.map((student, index) => `<option value="${index}">${student.Bil || (index + 1)}. ${student['Nama Murid']}</option>`).join('');
             }
             function populateSubjectSelector() {
                 subjectSelector.innerHTML = subjects.map(subject => `<option value="${subject}">${subject}</option>`).join('');
@@ -375,7 +305,8 @@
                 }
                 const average = (validTps.reduce((a, b) => a + b.tp, 0) / validTps.length).toFixed(2);
                 const strengths = validTps.filter(s => s.tp >= 5);
-                const needsAttention = validTps.filter(s => s.tp < 3);
+                // --- PERUBAHAN LOGIK UNTUK TP3 ---
+                const needsAttention = validTps.filter(s => s.tp <= 3);
                 summaryContainer.innerHTML = `
                     <p class="text-lg"><span class="font-semibold">Nama Murid:</span><br>${studentData['Nama Murid']}</p>
                     <p><span class="font-semibold">Purata Keseluruhan:</span> <span class="font-bold text-xl text-blue-600">${average}</span></p>
@@ -386,16 +317,16 @@
                         </ul>
                     </div>
                     <div class="mt-4">
-                        <h4 class="font-semibold text-md text-red-600">Aspek Perlu Perhatian (TP di bawah 3):</h4>
+                        <h4 class="font-semibold text-md text-red-600">Tahap Minimum & Perlu Perhatian (TP3 ke bawah):</h4>
                         <ul class="list-disc list-inside text-sm summary-list">
-                             ${needsAttention.length > 0 ? needsAttention.map(s => `<li>${s.subject} (TP${s.tp})</li>`).join('') : '<li>Syabas! Semua subjek mencapai tahap penguasaan minimum.</li>'}
+                             ${needsAttention.length > 0 ? needsAttention.map(s => `<li>${s.subject} (TP${s.tp})</li>`).join('') : '<li>Syabas! Semua subjek mencapai tahap penguasaan baik.</li>'}
                         </ul>
                     </div>
-                     <div class="mt-6 p-3 bg-blue-50 rounded-lg">
-                        <h4 class="font-semibold text-md text-blue-800">Cadangan Intervensi:</h4>
+                     <div class="mt-6 p-3 bg-yellow-50 rounded-lg">
+                        <h4 class="font-semibold text-md text-yellow-800">Cadangan Intervensi:</h4>
                         <p class="text-sm mt-1">
                             ${needsAttention.length > 0 
-                                ? `Beri fokus tambahan kepada subjek <strong>${needsAttention.map(s=>s.subject).join(', ')}</strong>. Sediakan latihan topikal dan galakkan pembelajaran bersama rakan yang lebih mahir.`
+                                ? `Beri fokus dan bimbingan tambahan kepada subjek <strong>${needsAttention.map(s=>s.subject).join(', ')}</strong> untuk melepasi tahap penguasaan minimum.`
                                 : `Teruskan momentum cemerlang. Galakkan murid untuk meneroka topik lanjutan atau menyertai pertandingan berkaitan subjek kekuatan.`
                             }
                         </p>
