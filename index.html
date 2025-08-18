@@ -3,336 +3,368 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Analisis - Muat Naik Excel</title>
+    <title>Dashboard Analisis PBD Sejarah - SK Satu Sultan Alam Shah</title>
+    
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- Library untuk membaca fail Excel -->
-    <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f3f4f6;
-        }
-        .chart-container {
-            position: relative;
-            height: 400px;
-            width: 100%;
+            background-color: #f8fafc; /* slate-50 */
         }
         .card {
             background-color: white;
-            border-radius: 0.75rem;
-            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-            padding: 1.5rem;
+            border-radius: 0.75rem; /* rounded-xl */
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1); /* shadow-md */
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
-        .hidden { display: none; }
-        .loader {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #3498db;
-            border-radius: 50%;
-            width: 24px;
-            height: 24px;
-            animation: spin 1s linear infinite;
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1); /* shadow-lg */
         }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        .chart-container {
+            position: relative;
+            height: 300px;
+            width: 100%;
+        }
+        .tab-button {
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+        }
+        .tab-button.active {
+            border-bottom-color: #4f46e5; /* indigo-600 */
+            color: #312e81; /* indigo-900 */
+            font-weight: 600;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
         }
     </style>
 </head>
-<body class="text-gray-800 p-4 sm:p-6 lg:p-8">
+<body class="text-gray-800">
 
-    <div class="max-w-7xl mx-auto">
-        <!-- Header -->
-        <header class="mb-8 text-center">
-            <h1 class="text-4xl font-bold text-gray-900">Dashboard Analisis Pencapaian Murid</h1>
-            <p class="mt-2 text-lg text-gray-600">Muat naik fail Excel anda untuk memulakan analisis.</p>
-        </header>
-
-        <!-- File Upload Section -->
-        <div id="upload-section" class="card mb-8">
-            <label for="excelFileInput" class="block text-lg font-medium text-gray-700 mb-2">Langkah 1: Muat Naik Fail Laporan (Excel)</label>
-            <input type="file" id="excelFileInput" accept=".xlsx, .xls" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100">
-            <div id="processing-indicator" class="hidden flex items-center mt-4">
-                <div class="loader mr-3"></div>
-                <span id="file-info" class="text-sm text-gray-500">Memproses fail, sila tunggu...</span>
+    <!-- Header -->
+    <header class="bg-white shadow-sm sticky top-0 z-20">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center flex-wrap">
+            <div>
+                <h1 class="text-xl md:text-2xl font-bold text-gray-900">Analisis PBD Sejarah (Pertengahan Sesi)</h1>
+                <p class="text-sm text-gray-600">SK Satu Sultan Alam Shah, Petaling Utama</p>
+            </div>
+            <div class="text-right mt-2 md:mt-0">
+                 <p class="text-sm font-medium text-gray-500">Tarikh DP PBD</p>
+                 <p class="font-bold text-indigo-600">18 Ogos 2025</p>
             </div>
         </div>
+    </header>
 
-        <!-- Dashboard Content - Hidden by default -->
-        <div id="dashboard-content" class="hidden">
-            <!-- Student Analysis Section -->
-            <div class="mb-10">
-                <h2 class="text-3xl font-bold text-gray-800 mb-4">Analisis Peringkat Murid</h2>
-                <div class="card">
-                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                        <div class="lg:col-span-1">
-                             <label for="student-selector" class="block text-lg font-medium text-gray-700 mb-2">Pilih Murid</label>
-                            <select id="student-selector" class="w-full p-3 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 mb-6"></select>
-                            <div id="student-summary" class="space-y-4 text-gray-700"></div>
-                        </div>
+    <!-- Main Content -->
+    <main class="container mx-auto px-6 py-8">
+
+        <!-- Student Count Section -->
+        <section class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+            <div class="card p-5 flex items-center space-x-4">
+                <div class="bg-sky-100 p-3 rounded-full">
+                    <i data-lucide="user" class="w-8 h-8 text-sky-600"></i>
+                </div>
+                <div>
+                    <h2 class="text-md font-bold text-gray-600">Tahun 4</h2>
+                    <p class="text-3xl font-extrabold text-gray-900"><span class="count-up" data-value="58">0</span> <span class="text-base font-medium text-gray-500">Murid</span></p>
+                </div>
+            </div>
+            <div class="card p-5 flex items-center space-x-4">
+                <div class="bg-amber-100 p-3 rounded-full">
+                    <i data-lucide="user" class="w-8 h-8 text-amber-600"></i>
+                </div>
+                <div>
+                    <h2 class="text-md font-bold text-gray-600">Tahun 5</h2>
+                    <p class="text-3xl font-extrabold text-gray-900"><span class="count-up" data-value="60">0</span> <span class="text-base font-medium text-gray-500">Murid</span></p>
+                </div>
+            </div>
+            <div class="card p-5 flex items-center space-x-4">
+                <div class="bg-rose-100 p-3 rounded-full">
+                    <i data-lucide="user" class="w-8 h-8 text-rose-600"></i>
+                </div>
+                <div>
+                    <h2 class="text-md font-bold text-gray-600">Tahun 6</h2>
+                    <p class="text-3xl font-extrabold text-gray-900"><span class="count-up" data-value="53">0</span> <span class="text-base font-medium text-gray-500">Murid</span></p>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Tabbed Analysis Section -->
+        <section class="card p-4 sm:p-6">
+             <!-- Tabs -->
+            <div class="border-b border-gray-200 mb-6">
+                <nav class="flex flex-wrap -mb-px" id="analysis-tabs">
+                    <button class="tab-button py-3 px-5 text-sm font-medium text-center text-gray-500 active" data-target="tahun4">
+                        <i data-lucide="bar-chart-big" class="inline-block mr-2 w-4 h-4"></i>Tahun 4
+                    </button>
+                    <button class="tab-button py-3 px-5 text-sm font-medium text-center text-gray-500" data-target="tahun5">
+                        <i data-lucide="bar-chart-big" class="inline-block mr-2 w-4 h-4"></i>Tahun 5
+                    </button>
+                    <button class="tab-button py-3 px-5 text-sm font-medium text-center text-gray-500" data-target="tahun6">
+                        <i data-lucide="bar-chart-big" class="inline-block mr-2 w-4 h-4"></i>Tahun 6
+                    </button>
+                </nav>
+            </div>
+
+            <!-- Tab Content -->
+            <div id="analysis-content">
+                <!-- Year 4 Analysis -->
+                <div id="tahun4" class="tab-content active">
+                    <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
                         <div class="lg:col-span-2">
-                             <h3 class="text-xl font-semibold text-gray-800 mb-4">Profil Penguasaan Subjek</h3>
+                            <h3 class="text-lg font-semibold mb-2 text-center text-sky-800">Taburan TP Tahun 4</h3>
                             <div class="chart-container">
-                                <canvas id="student-radar-chart"></canvas>
+                                <canvas id="chartTahun4"></canvas>
+                            </div>
+                        </div>
+                        <div class="lg:col-span-3 space-y-4">
+                            <div class="bg-red-50 border-l-4 border-red-500 p-4 rounded-r-lg">
+                                <h4 class="font-bold text-red-800 flex items-center"><i data-lucide="alert-circle" class="w-5 h-5 mr-2"></i>Isu Utama: TP2 (1 Murid / 1.72%)</h4>
+                                <p class="text-sm text-gray-700 mt-1">Kehadiran tidak konsisten, tidak melengkapkan tugasan, dan kurang mahir kemahiran asas Sejarah.</p>
+                                <div class="mt-3 pt-3 border-t">
+                                    <p class="text-xs font-semibold text-gray-600 mb-1">INTERVENSI:</p>
+                                    <ul class="list-disc list-inside text-sm text-gray-700 space-y-1">
+                                        <li>Bincang dengan ibu bapa punca ketidakhadiran.</li>
+                                        <li>Bimbingan individu & tugasan ringkas berperingkat.</li>
+                                        <li>Libatkan dalam pembelajaran berasaskan projek.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="bg-yellow-50 border-l-4 border-yellow-500 p-4 rounded-r-lg">
+                                <h4 class="font-bold text-yellow-800 flex items-center"><i data-lucide="users" class="w-5 h-5 mr-2"></i>Isu Longgokan: TP3 (41 Murid / 70.69%)</h4>
+                                <p class="text-sm text-gray-700 mt-1">Penguasaan sederhana, perlu sokongan ke TP4.</p>
+                                <div class="mt-3 pt-3 border-t">
+                                    <p class="text-xs font-semibold text-gray-600 mb-1">INTERVENSI:</p>
+                                    <ul class="list-disc list-inside text-sm text-gray-700 space-y-1">
+                                        <li>Sesi pengajaran berfokus & kelas tambahan/kelompok kecil.</li>
+                                        <li>Latihan bertema berterusan (peta minda, permainan).</li>
+                                        <li>Program mentor-mentee & libatkan ibu bapa.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Year 5 Analysis -->
+                <div id="tahun5" class="tab-content">
+                    <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
+                        <div class="lg:col-span-2">
+                            <h3 class="text-lg font-semibold mb-2 text-center text-amber-800">Taburan TP Tahun 5</h3>
+                            <div class="chart-container">
+                                <canvas id="chartTahun5"></canvas>
+                            </div>
+                        </div>
+                        <div class="lg:col-span-3 space-y-4">
+                            <div class="bg-red-50 border-l-4 border-red-500 p-4 rounded-r-lg">
+                                <h4 class="font-bold text-red-800 flex items-center"><i data-lucide="alert-circle" class="w-5 h-5 mr-2"></i>Isu Utama: TP2 (3 Murid / 5%)</h4>
+                                <p class="text-sm text-gray-700 mt-1">Kehadiran tidak konsisten, tidak melengkapkan tugasan, dan kurang mahir kemahiran asas Sejarah.</p>
+                                <div class="mt-3 pt-3 border-t">
+                                    <p class="text-xs font-semibold text-gray-600 mb-1">INTERVENSI:</p>
+                                    <ul class="list-disc list-inside text-sm text-gray-700 space-y-1">
+                                        <li>Bimbingan individu/kumpulan kecil.</li>
+                                        <li>Sistem pemantauan tugasan bersama ibu bapa.</li>
+                                        <li>Bahan tambahan (video, buku latihan).</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="bg-yellow-50 border-l-4 border-yellow-500 p-4 rounded-r-lg">
+                                <h4 class="font-bold text-yellow-800 flex items-center"><i data-lucide="users" class="w-5 h-5 mr-2"></i>Isu Fokus: TP3 (5 Murid / 8.3%)</h4>
+                                <p class="text-sm text-gray-700 mt-1">Menguasai sebahagian kandungan tetapi lemah dalam aplikasi pengetahuan.</p>
+                                <div class="mt-3 pt-3 border-t">
+                                    <p class="text-xs font-semibold text-gray-600 mb-1">INTERVENSI:</p>
+                                    <ul class="list-disc list-inside text-sm text-gray-700 space-y-1">
+                                        <li>Klinik Sejarah mingguan & kuiz interaktif.</li>
+                                        <li>Guna bahan visual (video, infografik).</li>
+                                        <li>Program mentor rakan sebaya.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Year 6 Analysis -->
+                <div id="tahun6" class="tab-content">
+                    <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
+                        <div class="lg:col-span-2">
+                            <h3 class="text-lg font-semibold mb-2 text-center text-rose-800">Taburan TP Tahun 6</h3>
+                            <div class="chart-container">
+                                <canvas id="chartTahun6"></canvas>
+                            </div>
+                        </div>
+                        <div class="lg:col-span-3">
+                            <div class="bg-yellow-50 border-l-4 border-yellow-500 p-4 rounded-r-lg">
+                                <h4 class="font-bold text-yellow-800 flex items-center"><i data-lucide="users" class="w-5 h-5 mr-2"></i>Isu Longgokan: TP3 (19 Murid / 35.84%)</h4>
+                                <p class="text-sm text-gray-700 mt-1">Menguasai sebahagian kandungan tetapi lemah dalam aplikasi pengetahuan.</p>
+                                <div class="mt-3 pt-3 border-t">
+                                    <p class="text-xs font-semibold text-gray-600 mb-1">INTERVENSI:</p>
+                                    <ul class="list-disc list-inside text-sm text-gray-700 space-y-1">
+                                        <li>Fokus PdP pada topik lemah (klinik Sejarah).</li>
+                                        <li>Latihan bertema (peta minda, kuiz, lakonan).</li>
+                                        <li>Guna bahan visual & program mentor rakan sebaya.</li>
+                                    </ul>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+        </section>
+    </main>
 
-            <!-- Divider -->
-            <hr class="my-12 border-gray-300 border-dashed">
-
-            <!-- Class Analysis Section -->
-            <div class="mb-8">
-                <h2 class="text-3xl font-bold text-gray-800 mb-4">Analisis Peringkat Kelas</h2>
-                <div class="mb-6 card">
-                    <h3 class="text-xl font-semibold text-gray-800 mb-4">Rumusan Keseluruhan Kelas</h3>
-                    <div id="overall-summary" class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center"></div>
-                </div>
-                <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
-                    <div class="lg:col-span-2 space-y-6">
-                        <div class="card">
-                            <label for="subject-selector" class="block text-lg font-medium text-gray-700 mb-2">Pilih Subjek</label>
-                            <select id="subject-selector" class="w-full p-3 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"></select>
-                        </div>
-                        <div class="card">
-                            <h3 class="text-xl font-semibold text-gray-800 mb-4">Pecahan TP Subjek</h3>
-                            <div class="chart-container" style="height:300px">
-                                <canvas id="pie-chart"></canvas>
-                            </div>
-                            <p id="subject-pie-summary" class="text-center mt-4 text-gray-600 text-sm"></p>
-                        </div>
-                    </div>
-                    <div class="lg:col-span-3 card">
-                        <h3 class="text-xl font-semibold text-gray-800 mb-4">Perbandingan Penguasaan Merentas Subjek</h3>
-                        <div class="chart-container">
-                            <canvas id="bar-chart"></canvas>
-                        </div>
-                    </div>
-                </div>
-            </div>
+    <!-- Footer -->
+    <footer class="bg-white mt-12 py-4 border-t">
+        <div class="container mx-auto px-6 text-center text-gray-500 text-sm">
+            <p>&copy; 2025 Laporan PBD Sejarah SK Satu Sultan Alam Shah.</p>
         </div>
-    </div>
+    </footer>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const excelFileInput = document.getElementById('excelFileInput');
-            const processingIndicator = document.getElementById('processing-indicator');
-            const fileInfo = document.getElementById('file-info');
-            const dashboardContent = document.getElementById('dashboard-content');
-            const studentSelector = document.getElementById('student-selector');
-            const subjectSelector = document.getElementById('subject-selector');
+    document.addEventListener('DOMContentLoaded', function() {
+        
+        // --- INTERACTIVE FEATURES ---
 
-            let pieChart, barChart, radarChart;
-            let allData = [];
-            let subjects = [];
+        // 1. Count-up animation
+        const countUpObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const el = entry.target;
+                    const finalValue = parseInt(el.dataset.value, 10);
+                    let currentValue = 0;
+                    const duration = 1500; // 1.5 seconds
+                    const increment = finalValue / (duration / 16);
 
-            const TP_COLORS = { 'TP1': '#ef4444', 'TP2': '#f97316', 'TP3': '#eab308', 'TP4': '#84cc16', 'TP5': '#22c55e', 'TP6': '#3b82f6', 'N/A': '#9ca3af' };
-
-            excelFileInput.addEventListener('change', (event) => {
-                const file = event.target.files[0];
-                if (!file) return;
-
-                processingIndicator.classList.remove('hidden');
-                fileInfo.textContent = `Memproses fail: ${file.name}...`;
-                excelFileInput.disabled = true;
-
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    // Use a timeout to make the processing indicator visible
-                    setTimeout(() => {
-                        try {
-                            const data = new Uint8Array(e.target.result);
-                            const workbook = XLSX.read(data, { type: 'array' });
-                            const firstSheetName = workbook.SheetNames[0];
-                            const worksheet = workbook.Sheets[firstSheetName];
-                            const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
-
-                            // Find header row and data
-                            const headerRowIndex = jsonData.findIndex(row => row.includes('Nama Murid'));
-                            if (headerRowIndex === -1) {
-                                throw new Error('Lajur "Nama Murid" tidak ditemui.');
-                            }
-                            
-                            const headers = jsonData[headerRowIndex].map(h => String(h).trim());
-                            const rawData = XLSX.utils.sheet_to_json(worksheet);
-
-                            allData = rawData.filter(row => row['Nama Murid'] && String(row['Nama Murid']).trim() !== '');
-                            subjects = headers.filter(key => key && !['Bil', 'Nama Murid', 'Catatan Kekuatan', 'Cadangan Tindakan'].includes(key));
-
-                            if (allData.length === 0 || subjects.length === 0) {
-                                throw new Error('Tiada data murid atau subjek yang sah ditemui.');
-                            }
-                            
-                            fileInfo.textContent = `Fail "${file.name}" berjaya diproses. ${allData.length} rekod murid ditemui.`;
-                            initializeDashboard();
-
-                        } catch (error) {
-                            console.error("Excel Processing Error:", error);
-                            fileInfo.textContent = `Ralat: ${error.message} Sila pastikan format fail Excel betul.`;
-                            dashboardContent.classList.add('hidden');
-                        } finally {
-                            processingIndicator.classList.add('hidden');
-                            excelFileInput.disabled = false;
+                    function updateCount() {
+                        currentValue += increment;
+                        if (currentValue < finalValue) {
+                            el.textContent = Math.ceil(currentValue);
+                            requestAnimationFrame(updateCount);
+                        } else {
+                            el.textContent = finalValue;
                         }
-                    }, 500); // 0.5 second delay for UX
-                };
-                reader.readAsArrayBuffer(file);
-            });
-
-            function resetDashboard() {
-                dashboardContent.classList.add('hidden');
-                if (pieChart) pieChart.destroy();
-                if (barChart) barChart.destroy();
-                if (radarChart) radarChart.destroy();
-                pieChart = barChart = radarChart = null;
-            }
-
-            function initializeDashboard() {
-                resetDashboard();
-                dashboardContent.classList.remove('hidden');
-                
-                populateStudentSelector();
-                populateSubjectSelector();
-                updateOverallSummary();
-                createBarChart();
-                updatePieChart(subjects[0]);
-                updateStudentView(allData[0]);
-            }
-            
-            studentSelector.addEventListener('change', (event) => updateStudentView(allData[event.target.value]));
-            subjectSelector.addEventListener('change', (event) => updatePieChart(event.target.value));
-
-            function populateStudentSelector() {
-                studentSelector.innerHTML = allData.map((student, index) => `<option value="${index}">${student.Bil || (index + 1)}. ${student['Nama Murid']}</option>`).join('');
-            }
-            function populateSubjectSelector() {
-                subjectSelector.innerHTML = subjects.map(subject => `<option value="${subject}">${subject}</option>`).join('');
-            }
-            
-            function getTpCounts(data, subject) {
-                return data.reduce((acc, row) => {
-                    const tpKey = `TP${row[subject]?.toString().trim()}` || 'N/A';
-                    acc[tpKey] = (acc[tpKey] || 0) + 1;
-                    return acc;
-                }, { 'TP1': 0, 'TP2': 0, 'TP3': 0, 'TP4': 0, 'TP5': 0, 'TP6': 0, 'N/A': 0 });
-            }
-
-            function updatePieChart(subject) {
-                const tpCounts = getTpCounts(allData, subject);
-                const chartData = {
-                    labels: Object.keys(tpCounts).filter(tp => tpCounts[tp] > 0),
-                    datasets: [{
-                        data: Object.values(tpCounts).filter(count => count > 0),
-                        backgroundColor: Object.keys(tpCounts).filter(tp => tpCounts[tp] > 0).map(tp => TP_COLORS[tp] || TP_COLORS['N/A']),
-                        borderColor: '#fff', borderWidth: 2
-                    }]
-                };
-                if (pieChart) pieChart.destroy();
-                const ctx = document.getElementById('pie-chart').getContext('2d');
-                pieChart = new Chart(ctx, { type: 'pie', data: chartData, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { padding: 15 } } } } });
-
-                const totalStudents = allData.length;
-                const achievedMinimum = totalStudents - (tpCounts['TP1'] + tpCounts['TP2']);
-                const percentageAchieved = totalStudents > 0 ? ((achievedMinimum / totalStudents) * 100).toFixed(1) : 0;
-                document.getElementById('subject-pie-summary').innerHTML = `Bagi subjek <strong>${subject}</strong>, <strong>${percentageAchieved}%</strong> murid telah mencapai tahap penguasaan minimum (TP3 dan ke atas).`;
-            }
-
-            function createBarChart() {
-                const tpLevels = ['TP1', 'TP2', 'TP3', 'TP4', 'TP5', 'TP6'];
-                const datasets = tpLevels.map(tp => ({
-                    label: tp,
-                    data: subjects.map(subject => getTpCounts(allData, subject)[tp] || 0),
-                    backgroundColor: TP_COLORS[tp],
-                }));
-                const chartData = {
-                    labels: subjects.map(s => s.replace('Pendidikan ', 'P. ').replace('dan Pendidikan Kesihatan', '& PK').replace('Reka Bentuk dan Teknologi', 'RBT')),
-                    datasets: datasets
-                };
-                if (barChart) barChart.destroy();
-                const ctx = document.getElementById('bar-chart').getContext('2d');
-                barChart = new Chart(ctx, { type: 'bar', data: chartData, options: { responsive: true, maintainAspectRatio: false, scales: { x: { stacked: true, ticks: { autoSkip: false, maxRotation: 45, minRotation: 45 } }, y: { stacked: true, beginAtZero: true, title: { display: true, text: 'Bilangan Murid' } } } } });
-            }
-            
-            function updateOverallSummary() {
-                const summaryContainer = document.getElementById('overall-summary');
-                const totalStudents = allData.length;
-                const subjectAverages = subjects.map(subject => {
-                    const tps = allData.map(row => parseInt(row[subject], 10)).filter(tp => !isNaN(tp));
-                    return { subject, average: tps.length > 0 ? tps.reduce((a, b) => a + b, 0) / tps.length : 0 };
-                });
-                const overallAverage = (subjectAverages.reduce((acc, s) => acc + s.average, 0) / subjectAverages.length).toFixed(2);
-                const sortedSubjects = [...subjectAverages].sort((a, b) => b.average - a.average);
-                const bestSubject = sortedSubjects[0];
-                const worstSubject = sortedSubjects[sortedSubjects.length - 1];
-                summaryContainer.innerHTML = [
-                    { label: 'Jumlah Murid', value: totalStudents, icon: '👥' },
-                    { label: 'Purata TP Keseluruhan', value: overallAverage, icon: '📊' },
-                    { label: 'Subjek Prestasi Tertinggi', value: `${bestSubject.subject.split(' ')[0]} (Avg: ${bestSubject.average.toFixed(2)})`, icon: '🏆' },
-                    { label: 'Subjek Perlu Perhatian', value: `${worstSubject.subject.split(' ')[0]} (Avg: ${worstSubject.average.toFixed(2)})`, icon: '🚩' }
-                ].map(item => `<div class="bg-gray-50 p-4 rounded-lg"><div class="text-4xl">${item.icon}</div><p class="text-sm text-gray-500 mt-2">${item.label}</p><p class="text-xl font-bold text-gray-900">${item.value}</p></div>`).join('');
-            }
-
-            function updateStudentView(studentData) {
-                if (!studentData) return;
-                updateStudentRadarChart(studentData);
-                updateStudentSummary(studentData);
-            }
-
-            function updateStudentRadarChart(studentData) {
-                const studentTps = subjects.map(subject => parseInt(studentData[subject], 10) || 0);
-                const chartData = {
-                    labels: subjects.map(s => s.replace('Pendidikan ', 'P. ').replace('dan Pendidikan Kesihatan', '& PK').replace('Reka Bentuk dan Teknologi', 'RBT')),
-                    datasets: [{
-                        label: `TP ${studentData['Nama Murid'].split(' ')[0]}`,
-                        data: studentTps, fill: true, backgroundColor: 'rgba(59, 130, 246, 0.2)', borderColor: 'rgb(59, 130, 246)',
-                        pointBackgroundColor: 'rgb(59, 130, 246)', pointBorderColor: '#fff', pointHoverBackgroundColor: '#fff', pointHoverBorderColor: 'rgb(59, 130, 246)'
-                    }]
-                };
-                if (radarChart) radarChart.destroy();
-                const ctx = document.getElementById('student-radar-chart').getContext('2d');
-                radarChart = new Chart(ctx, { type: 'radar', data: chartData, options: { responsive: true, maintainAspectRatio: false, elements: { line: { borderWidth: 3 } }, scales: { r: { angleLines: { display: true }, suggestedMin: 0, suggestedMax: 6, pointLabels: { font: {size: 10} } } } } });
-            }
-
-            function updateStudentSummary(studentData) {
-                const summaryContainer = document.getElementById('student-summary');
-                const tps = subjects.map(subject => ({ subject, tp: parseInt(studentData[subject], 10) || 0 }));
-                const validTps = tps.filter(item => item.tp > 0);
-                if (validTps.length === 0) {
-                    summaryContainer.innerHTML = `<p>Tiada data TP untuk murid ini.</p>`; return;
+                    }
+                    requestAnimationFrame(updateCount);
+                    observer.unobserve(el);
                 }
-                const average = (validTps.reduce((a, b) => a + b.tp, 0) / validTps.length).toFixed(2);
-                const strengths = validTps.filter(s => s.tp >= 5);
-                // --- PERUBAHAN LOGIK UNTUK TP3 ---
-                const needsAttention = validTps.filter(s => s.tp <= 3);
-                summaryContainer.innerHTML = `
-                    <p class="text-lg"><span class="font-semibold">Nama Murid:</span><br>${studentData['Nama Murid']}</p>
-                    <p><span class="font-semibold">Purata Keseluruhan:</span> <span class="font-bold text-xl text-blue-600">${average}</span></p>
-                    <div class="mt-4">
-                        <h4 class="font-semibold text-md text-green-600">Kekuatan Utama (TP5 ke atas):</h4>
-                        <ul class="list-disc list-inside text-sm summary-list">
-                            ${strengths.length > 0 ? strengths.map(s => `<li>${s.subject} (TP${s.tp})</li>`).join('') : '<li>Tiada subjek dengan TP5 ke atas.</li>'}
-                        </ul>
-                    </div>
-                    <div class="mt-4">
-                        <h4 class="font-semibold text-md text-red-600">Tahap Minimum & Perlu Perhatian (TP3 ke bawah):</h4>
-                        <ul class="list-disc list-inside text-sm summary-list">
-                             ${needsAttention.length > 0 ? needsAttention.map(s => `<li>${s.subject} (TP${s.tp})</li>`).join('') : '<li>Syabas! Semua subjek mencapai tahap penguasaan baik.</li>'}
-                        </ul>
-                    </div>
-                     <div class="mt-6 p-3 bg-yellow-50 rounded-lg">
-                        <h4 class="font-semibold text-md text-yellow-800">Cadangan Intervensi:</h4>
-                        <p class="text-sm mt-1">
-                            ${needsAttention.length > 0 
-                                ? `Beri fokus dan bimbingan tambahan kepada subjek <strong>${needsAttention.map(s=>s.subject).join(', ')}</strong> untuk melepasi tahap penguasaan minimum.`
-                                : `Teruskan momentum cemerlang. Galakkan murid untuk meneroka topik lanjutan atau menyertai pertandingan berkaitan subjek kekuatan.`
-                            }
-                        </p>
-                    </div>`;
-            }
+            });
+        }, { threshold: 0.5 });
+
+        document.querySelectorAll('.count-up').forEach(el => {
+            countUpObserver.observe(el);
         });
+
+        // 2. Tab functionality
+        const tabs = document.querySelectorAll('.tab-button');
+        const contents = document.querySelectorAll('.tab-content');
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                tabs.forEach(t => t.classList.remove('active'));
+                contents.forEach(c => c.classList.remove('active'));
+
+                tab.classList.add('active');
+                document.getElementById(tab.dataset.target).classList.add('active');
+            });
+        });
+
+        // --- CHART RENDERING ---
+        
+        const commonChartOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            animation: {
+                duration: 1000,
+                easing: 'easeInOutQuart'
+            },
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            const value = context.raw;
+                            const total = context.chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
+                            const percentage = total > 0 ? ((value / total) * 100).toFixed(2) : 0;
+                            return `Bilangan: ${value} (${percentage}%)`;
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: { beginAtZero: true, title: { display: true, text: 'Bilangan Murid' } },
+                x: { title: { display: true, text: 'Tahap Penguasaan (TP)' } }
+            }
+        };
+
+        // Chart for Tahun 4
+        const dataTahun4 = { total: 58, values: { tp2: 1, tp3: 41 } };
+        dataTahun4.values.others = dataTahun4.total - dataTahun4.values.tp2 - dataTahun4.values.tp3;
+        new Chart(document.getElementById('chartTahun4').getContext('2d'), {
+            type: 'bar',
+            data: {
+                labels: ['TP2', 'TP3', 'TP4-TP6'],
+                datasets: [{
+                    label: 'Bilangan Murid',
+                    data: [dataTahun4.values.tp2, dataTahun4.values.tp3, dataTahun4.values.others],
+                    backgroundColor: ['#ef4444', '#f59e0b', '#3b82f6'],
+                    borderRadius: 4
+                }]
+            },
+            options: commonChartOptions
+        });
+
+        // Chart for Tahun 5
+        const dataTahun5 = { total: 60, values: { tp2: 3, tp3: 5 } };
+        dataTahun5.values.others = dataTahun5.total - dataTahun5.values.tp2 - dataTahun5.values.tp3;
+        new Chart(document.getElementById('chartTahun5').getContext('2d'), {
+            type: 'bar',
+            data: {
+                labels: ['TP2', 'TP3', 'TP4-TP6'],
+                datasets: [{
+                    label: 'Bilangan Murid',
+                    data: [dataTahun5.values.tp2, dataTahun5.values.tp3, dataTahun5.values.others],
+                    backgroundColor: ['#ef4444', '#f59e0b', '#3b82f6'],
+                    borderRadius: 4
+                }]
+            },
+            options: commonChartOptions
+        });
+
+        // Chart for Tahun 6
+        const dataTahun6 = { total: 53, values: { tp3: 19 } };
+        dataTahun6.values.others = dataTahun6.total - dataTahun6.values.tp3;
+        new Chart(document.getElementById('chartTahun6').getContext('2d'), {
+            type: 'bar',
+            data: {
+                labels: ['TP1-TP2', 'TP3', 'TP4-TP6'],
+                datasets: [{
+                    label: 'Bilangan Murid',
+                    data: [0, dataTahun6.values.tp3, dataTahun6.values.others],
+                    backgroundColor: ['#d1d5db', '#f59e0b', '#3b82f6'],
+                    borderRadius: 4
+                }]
+            },
+            options: commonChartOptions
+        });
+
+        lucide.createIcons();
+    });
     </script>
 </body>
 </html>
