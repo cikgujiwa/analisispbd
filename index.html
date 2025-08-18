@@ -36,7 +36,7 @@
         }
         .chart-container {
             position: relative;
-            height: 300px;
+            height: 350px;
             width: 100%;
         }
         .tab-button {
@@ -112,13 +112,13 @@
             <div class="border-b border-gray-200 mb-6">
                 <nav class="flex flex-wrap -mb-px" id="analysis-tabs">
                     <button class="tab-button py-3 px-5 text-sm font-medium text-center text-gray-500 active" data-target="tahun4">
-                        <i data-lucide="bar-chart-big" class="inline-block mr-2 w-4 h-4"></i>Tahun 4
+                        <i data-lucide="bar-chart-3" class="inline-block mr-2 w-4 h-4"></i>Tahun 4
                     </button>
                     <button class="tab-button py-3 px-5 text-sm font-medium text-center text-gray-500" data-target="tahun5">
-                        <i data-lucide="bar-chart-big" class="inline-block mr-2 w-4 h-4"></i>Tahun 5
+                        <i data-lucide="bar-chart-3" class="inline-block mr-2 w-4 h-4"></i>Tahun 5
                     </button>
                     <button class="tab-button py-3 px-5 text-sm font-medium text-center text-gray-500" data-target="tahun6">
-                        <i data-lucide="bar-chart-big" class="inline-block mr-2 w-4 h-4"></i>Tahun 6
+                        <i data-lucide="bar-chart-3" class="inline-block mr-2 w-4 h-4"></i>Tahun 6
                     </button>
                 </nav>
             </div>
@@ -127,51 +127,25 @@
             <div id="analysis-content">
                 <!-- Year 4 Analysis -->
                 <div id="tahun4" class="tab-content active">
-                    <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
-                        <div class="lg:col-span-2">
-                            <h3 class="text-lg font-semibold mb-2 text-center text-sky-800">Taburan TP Tahun 4</h3>
-                            <div class="chart-container">
-                                <canvas id="chartTahun4"></canvas>
+                    <h3 class="text-xl font-bold mb-4 text-sky-800 text-center">Analisis Sejarah Tahun 4</h3>
+                    <div class="chart-container mt-6">
+                        <canvas id="chartTahun4"></canvas>
+                    </div>
+                    <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="bg-red-50 border-l-4 border-red-500 p-4 rounded-r-lg">
+                            <h4 class="font-bold text-red-800 flex items-center"><i data-lucide="alert-circle" class="w-5 h-5 mr-2"></i>Isu Utama: TP2 (1 Murid / 1.72%)</h4>
+                            <p class="text-sm text-gray-700 mt-1">Kehadiran tidak konsisten, tidak melengkapkan tugasan, dan kurang mahir kemahiran asas Sejarah.</p>
+                            <div class="mt-3 pt-3 border-t text-sm text-gray-700 space-y-2">
+                                <div><p class="font-semibold">Jangka Pendek:</p><ul class="list-disc list-inside pl-4"><li>Bincang dengan ibu bapa punca ketidakhadiran.</li><li>Bimbingan individu & tugasan ringkas berperingkat.</li></ul></div>
+                                <div><p class="font-semibold">Jangka Panjang:</p><ul class="list-disc list-inside pl-4"><li>Libatkan dalam pembelajaran berasaskan projek.</li></ul></div>
                             </div>
                         </div>
-                        <div class="lg:col-span-3 space-y-4">
-                            <div class="bg-red-50 border-l-4 border-red-500 p-4 rounded-r-lg">
-                                <h4 class="font-bold text-red-800 flex items-center"><i data-lucide="alert-circle" class="w-5 h-5 mr-2"></i>Isu Utama: TP2 (1 Murid / 1.72%)</h4>
-                                <p class="text-sm text-gray-700 mt-1">Kehadiran tidak konsisten, tidak melengkapkan tugasan, dan kurang mahir kemahiran asas Sejarah.</p>
-                                <div class="mt-3 pt-3 border-t text-sm text-gray-700 space-y-2">
-                                    <div>
-                                        <p class="font-semibold">Jangka Pendek:</p>
-                                        <ul class="list-disc list-inside pl-4">
-                                            <li>Bincang dengan ibu bapa punca ketidakhadiran.</li>
-                                            <li>Bimbingan individu & tugasan ringkas berperingkat.</li>
-                                        </ul>
-                                    </div>
-                                    <div>
-                                        <p class="font-semibold">Jangka Panjang:</p>
-                                        <ul class="list-disc list-inside pl-4">
-                                            <li>Libatkan dalam pembelajaran berasaskan projek.</li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="bg-yellow-50 border-l-4 border-yellow-500 p-4 rounded-r-lg">
-                                <h4 class="font-bold text-yellow-800 flex items-center"><i data-lucide="users" class="w-5 h-5 mr-2"></i>Isu Longgokan: TP3 (41 Murid / 70.69%)</h4>
-                                <p class="text-sm text-gray-700 mt-1">Penguasaan sederhana, perlu sokongan ke TP4.</p>
-                                <div class="mt-3 pt-3 border-t text-sm text-gray-700 space-y-2">
-                                    <div>
-                                        <p class="font-semibold">Jangka Pendek:</p>
-                                        <ul class="list-disc list-inside pl-4">
-                                            <li>Sesi pengajaran berfokus & kelas tambahan/kelompok kecil.</li>
-                                            <li>Latihan bertema berterusan (peta minda, permainan).</li>
-                                        </ul>
-                                    </div>
-                                    <div>
-                                        <p class="font-semibold">Jangka Panjang:</p>
-                                        <ul class="list-disc list-inside pl-4">
-                                            <li>Program mentor-mentee & libatkan ibu bapa.</li>
-                                        </ul>
-                                    </div>
-                                </div>
+                        <div class="bg-yellow-50 border-l-4 border-yellow-500 p-4 rounded-r-lg">
+                            <h4 class="font-bold text-yellow-800 flex items-center"><i data-lucide="users" class="w-5 h-5 mr-2"></i>Isu Longgokan: TP3 (41 Murid / 70.69%)</h4>
+                            <p class="text-sm text-gray-700 mt-1">Penguasaan sederhana, perlu sokongan ke TP4.</p>
+                            <div class="mt-3 pt-3 border-t text-sm text-gray-700 space-y-2">
+                                <div><p class="font-semibold">Jangka Pendek:</p><ul class="list-disc list-inside pl-4"><li>Sesi pengajaran berfokus & kelas tambahan/kelompok kecil.</li><li>Latihan bertema berterusan (peta minda, permainan).</li></ul></div>
+                                <div><p class="font-semibold">Jangka Panjang:</p><ul class="list-disc list-inside pl-4"><li>Program mentor-mentee & libatkan ibu bapa.</li></ul></div>
                             </div>
                         </div>
                     </div>
@@ -179,51 +153,25 @@
 
                 <!-- Year 5 Analysis -->
                 <div id="tahun5" class="tab-content">
-                    <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
-                        <div class="lg:col-span-2">
-                            <h3 class="text-lg font-semibold mb-2 text-center text-amber-800">Taburan TP Tahun 5</h3>
-                            <div class="chart-container">
-                                <canvas id="chartTahun5"></canvas>
+                    <h3 class="text-xl font-bold mb-4 text-amber-800 text-center">Analisis Sejarah Tahun 5</h3>
+                    <div class="chart-container mt-6">
+                        <canvas id="chartTahun5"></canvas>
+                    </div>
+                    <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="bg-red-50 border-l-4 border-red-500 p-4 rounded-r-lg">
+                            <h4 class="font-bold text-red-800 flex items-center"><i data-lucide="alert-circle" class="w-5 h-5 mr-2"></i>Isu Utama: TP2 (3 Murid / 5%)</h4>
+                            <p class="text-sm text-gray-700 mt-1">Kehadiran tidak konsisten, tidak melengkapkan tugasan, dan kurang mahir kemahiran asas Sejarah.</p>
+                            <div class="mt-3 pt-3 border-t text-sm text-gray-700 space-y-2">
+                                <div><p class="font-semibold">Jangka Pendek:</p><ul class="list-disc list-inside pl-4"><li>Bimbingan individu/kumpulan kecil.</li><li>Bahan tambahan (video, buku latihan).</li></ul></div>
+                                <div><p class="font-semibold">Jangka Panjang:</p><ul class="list-disc list-inside pl-4"><li>Sistem pemantauan tugasan bersama ibu bapa.</li></ul></div>
                             </div>
                         </div>
-                        <div class="lg:col-span-3 space-y-4">
-                            <div class="bg-red-50 border-l-4 border-red-500 p-4 rounded-r-lg">
-                                <h4 class="font-bold text-red-800 flex items-center"><i data-lucide="alert-circle" class="w-5 h-5 mr-2"></i>Isu Utama: TP2 (3 Murid / 5%)</h4>
-                                <p class="text-sm text-gray-700 mt-1">Kehadiran tidak konsisten, tidak melengkapkan tugasan, dan kurang mahir kemahiran asas Sejarah.</p>
-                                <div class="mt-3 pt-3 border-t text-sm text-gray-700 space-y-2">
-                                    <div>
-                                        <p class="font-semibold">Jangka Pendek:</p>
-                                        <ul class="list-disc list-inside pl-4">
-                                            <li>Bimbingan individu/kumpulan kecil.</li>
-                                            <li>Bahan tambahan (video, buku latihan).</li>
-                                        </ul>
-                                    </div>
-                                    <div>
-                                        <p class="font-semibold">Jangka Panjang:</p>
-                                        <ul class="list-disc list-inside pl-4">
-                                            <li>Sistem pemantauan tugasan bersama ibu bapa.</li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="bg-yellow-50 border-l-4 border-yellow-500 p-4 rounded-r-lg">
-                                <h4 class="font-bold text-yellow-800 flex items-center"><i data-lucide="users" class="w-5 h-5 mr-2"></i>Isu Fokus: TP3 (5 Murid / 8.3%)</h4>
-                                <p class="text-sm text-gray-700 mt-1">Menguasai sebahagian kandungan tetapi lemah dalam aplikasi pengetahuan.</p>
-                                <div class="mt-3 pt-3 border-t text-sm text-gray-700 space-y-2">
-                                     <div>
-                                        <p class="font-semibold">Jangka Pendek:</p>
-                                        <ul class="list-disc list-inside pl-4">
-                                            <li>Klinik Sejarah mingguan & kuiz interaktif.</li>
-                                            <li>Guna bahan visual (video, infografik).</li>
-                                        </ul>
-                                    </div>
-                                    <div>
-                                        <p class="font-semibold">Jangka Panjang:</p>
-                                        <ul class="list-disc list-inside pl-4">
-                                            <li>Program mentor rakan sebaya.</li>
-                                        </ul>
-                                    </div>
-                                </div>
+                        <div class="bg-yellow-50 border-l-4 border-yellow-500 p-4 rounded-r-lg">
+                            <h4 class="font-bold text-yellow-800 flex items-center"><i data-lucide="users" class="w-5 h-5 mr-2"></i>Isu Fokus: TP3 (5 Murid / 8.3%)</h4>
+                            <p class="text-sm text-gray-700 mt-1">Menguasai sebahagian kandungan tetapi lemah dalam aplikasi pengetahuan.</p>
+                            <div class="mt-3 pt-3 border-t text-sm text-gray-700 space-y-2">
+                                 <div><p class="font-semibold">Jangka Pendek:</p><ul class="list-disc list-inside pl-4"><li>Klinik Sejarah mingguan & kuiz interaktif.</li><li>Guna bahan visual (video, infografik).</li></ul></div>
+                                 <div><p class="font-semibold">Jangka Panjang:</p><ul class="list-disc list-inside pl-4"><li>Program mentor rakan sebaya.</li></ul></div>
                             </div>
                         </div>
                     </div>
@@ -231,33 +179,17 @@
 
                 <!-- Year 6 Analysis -->
                 <div id="tahun6" class="tab-content">
-                    <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
-                        <div class="lg:col-span-2">
-                            <h3 class="text-lg font-semibold mb-2 text-center text-rose-800">Taburan TP Tahun 6</h3>
-                            <div class="chart-container">
-                                <canvas id="chartTahun6"></canvas>
-                            </div>
-                        </div>
-                        <div class="lg:col-span-3">
-                            <div class="bg-yellow-50 border-l-4 border-yellow-500 p-4 rounded-r-lg">
-                                <h4 class="font-bold text-yellow-800 flex items-center"><i data-lucide="users" class="w-5 h-5 mr-2"></i>Isu Longgokan: TP3 (19 Murid / 35.84%)</h4>
-                                <p class="text-sm text-gray-700 mt-1">Menguasai sebahagian kandungan tetapi lemah dalam aplikasi pengetahuan.</p>
-                                <div class="mt-3 pt-3 border-t text-sm text-gray-700 space-y-2">
-                                    <div>
-                                        <p class="font-semibold">Jangka Pendek:</p>
-                                        <ul class="list-disc list-inside pl-4">
-                                            <li>Fokus PdP pada topik lemah (klinik Sejarah).</li>
-                                            <li>Latihan bertema (peta minda, kuiz, lakonan).</li>
-                                            <li>Guna bahan visual & program mentor rakan sebaya.</li>
-                                        </ul>
-                                    </div>
-                                    <div>
-                                        <p class="font-semibold">Jangka Panjang:</p>
-                                        <ul class="list-disc list-inside pl-4">
-                                            <li>Libatkan ibu bapa dalam pemantauan pembelajaran.</li>
-                                        </ul>
-                                    </div>
-                                </div>
+                    <h3 class="text-xl font-bold mb-4 text-rose-800 text-center">Analisis Sejarah Tahun 6</h3>
+                    <div class="chart-container mt-6">
+                        <canvas id="chartTahun6"></canvas>
+                    </div>
+                    <div class="mt-6">
+                        <div class="bg-yellow-50 border-l-4 border-yellow-500 p-4 rounded-r-lg">
+                            <h4 class="font-bold text-yellow-800 flex items-center"><i data-lucide="users" class="w-5 h-5 mr-2"></i>Fokus Utama: TP3 (19 Murid / 35.84%)</h4>
+                            <p class="text-sm text-gray-700 mt-1">Menguasai sebahagian kandungan tetapi lemah dalam aplikasi pengetahuan.</p>
+                            <div class="mt-3 pt-3 border-t text-sm text-gray-700 space-y-2">
+                                <div><p class="font-semibold">Jangka Pendek:</p><ul class="list-disc list-inside pl-4"><li>Fokus PdP pada topik lemah (klinik Sejarah).</li><li>Latihan bertema (peta minda, kuiz, lakonan).</li><li>Guna bahan visual & program mentor rakan sebaya.</li></ul></div>
+                                <div><p class="font-semibold">Jangka Panjang:</p><ul class="list-disc list-inside pl-4"><li>Libatkan ibu bapa dalam pemantauan pembelajaran.</li></ul></div>
                             </div>
                         </div>
                     </div>
@@ -277,17 +209,14 @@
     document.addEventListener('DOMContentLoaded', function() {
         
         // --- INTERACTIVE FEATURES ---
-
-        // 1. Count-up animation
         const countUpObserver = new IntersectionObserver((entries, observer) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     const el = entry.target;
                     const finalValue = parseInt(el.dataset.value, 10);
                     let currentValue = 0;
-                    const duration = 1500; // 1.5 seconds
+                    const duration = 1500;
                     const increment = finalValue / (duration / 16);
-
                     function updateCount() {
                         currentValue += increment;
                         if (currentValue < finalValue) {
@@ -303,11 +232,8 @@
             });
         }, { threshold: 0.5 });
 
-        document.querySelectorAll('.count-up').forEach(el => {
-            countUpObserver.observe(el);
-        });
+        document.querySelectorAll('.count-up').forEach(el => countUpObserver.observe(el));
 
-        // 2. Tab functionality
         const tabs = document.querySelectorAll('.tab-button');
         const contents = document.querySelectorAll('.tab-content');
         tabs.forEach(tab => {
@@ -321,14 +247,10 @@
         });
 
         // --- CHART RENDERING ---
-        
         const commonChartOptions = {
             responsive: true,
             maintainAspectRatio: false,
-            animation: {
-                duration: 1000,
-                easing: 'easeInOutQuart'
-            },
+            animation: { duration: 1000, easing: 'easeInOutQuart' },
             plugins: {
                 legend: { display: false },
                 tooltip: {
@@ -348,17 +270,17 @@
             }
         };
 
+        const tpColors = ['#9ca3af', '#ef4444', '#f59e0b', '#84cc16', '#22c55e', '#10b981'];
+
         // Chart for Tahun 4
-        const dataTahun4 = { total: 58, values: { tp2: 1, tp3: 41 } };
-        dataTahun4.values.others = dataTahun4.total - dataTahun4.values.tp2 - dataTahun4.values.tp3;
         new Chart(document.getElementById('chartTahun4').getContext('2d'), {
             type: 'bar',
             data: {
-                labels: ['TP2', 'TP3', 'TP4-TP6'],
+                labels: ['TP1', 'TP2', 'TP3', 'TP4', 'TP5', 'TP6'],
                 datasets: [{
                     label: 'Bilangan Murid',
-                    data: [dataTahun4.values.tp2, dataTahun4.values.tp3, dataTahun4.values.others],
-                    backgroundColor: ['#ef4444', '#f59e0b', '#3b82f6'],
+                    data: [0, 1, 41, 16, 0, 0],
+                    backgroundColor: tpColors,
                     borderRadius: 4
                 }]
             },
@@ -366,16 +288,14 @@
         });
 
         // Chart for Tahun 5
-        const dataTahun5 = { total: 60, values: { tp2: 3, tp3: 5 } };
-        dataTahun5.values.others = dataTahun5.total - dataTahun5.values.tp2 - dataTahun5.values.tp3;
         new Chart(document.getElementById('chartTahun5').getContext('2d'), {
             type: 'bar',
             data: {
-                labels: ['TP2', 'TP3', 'TP4-TP6'],
+                labels: ['TP1', 'TP2', 'TP3', 'TP4', 'TP5', 'TP6'],
                 datasets: [{
                     label: 'Bilangan Murid',
-                    data: [dataTahun5.values.tp2, dataTahun5.values.tp3, dataTahun5.values.others],
-                    backgroundColor: ['#ef4444', '#f59e0b', '#3b82f6'],
+                    data: [0, 3, 5, 52, 0, 0],
+                    backgroundColor: tpColors,
                     borderRadius: 4
                 }]
             },
@@ -383,16 +303,14 @@
         });
 
         // Chart for Tahun 6
-        const dataTahun6 = { total: 53, values: { tp3: 19 } };
-        dataTahun6.values.others = dataTahun6.total - dataTahun6.values.tp3;
         new Chart(document.getElementById('chartTahun6').getContext('2d'), {
             type: 'bar',
             data: {
-                labels: ['TP1-TP2', 'TP3', 'TP4-TP6'],
+                labels: ['TP1', 'TP2', 'TP3', 'TP4', 'TP5', 'TP6'],
                 datasets: [{
                     label: 'Bilangan Murid',
-                    data: [0, dataTahun6.values.tp3, dataTahun6.values.others],
-                    backgroundColor: ['#d1d5db', '#f59e0b', '#3b82f6'],
+                    data: [0, 0, 19, 28, 6, 0],
+                    backgroundColor: tpColors,
                     borderRadius: 4
                 }]
             },
