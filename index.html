@@ -3,236 +3,286 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Index - Dashboard PBD & UASA Sejarah - SK Satu Sultan Alam Shah</title>
+  <title>Dashboard — PBD & UASA Sejarah (Fixed)</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/lucide@0.264.0/dist/lucide.min.js"></script>
   <style>
-    .chart-container { position: relative; height: 300px; width: 100%; }
-    .tab-button.active { color: #1e40af; font-weight: 700; border-bottom: 2px solid currentColor; }
-    .section-hidden { display: none; }
-    .grade-pill { display:inline-block; padding:.25rem .5rem; border-radius:.375rem; font-weight:600 }
-    .compare-highlight { background: linear-gradient(90deg, rgba(34,197,94,0.08), rgba(167,243,208,0.06)); border-left: 4px solid #10b981; padding: .75rem; border-radius: .375rem; }
-    .small-meta { font-size: 0.85rem; color: #6b7280; }
+    :root{--muted:#6b7280;--card-bg:#fff}
+    body{font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial;background:#f8fafc}
+    .card{background:var(--card-bg);border-radius:.5rem;padding:1rem;box-shadow:0 6px 18px rgba(15,23,42,.06)}
+    .chart-container{position:relative;height:320px;width:100%}
+    .muted{color:var(--muted)}
+    .tab-button.active{color:#075985;font-weight:700;border-bottom:3px solid currentColor}
+    .section-hidden{display:none}
   </style>
 </head>
-<body class="bg-gray-50 text-gray-800">
-  <header class="bg-white shadow sticky top-0 z-30">
-    <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+<body class="text-gray-800">
+
+<header class="sticky top-0 bg-white/80 backdrop-blur-sm border-b z-40">
+  <div class="container mx-auto px-6 py-4 flex items-center justify-between">
+    <div class="flex items-center gap-4">
+      <div class="p-2 bg-sky-100 rounded"><i data-lucide="book" class="w-6 h-6 text-sky-600"></i></div>
       <div>
-        <h1 class="text-lg font-bold">Index — Dashboard PBD & UASA Sejarah (SK Satu Sultan Alam Shah)</h1>
-        <p class="text-sm text-gray-500">Satu fail HTML mengandungi kedua-dua dashboard. 2025</p>
+        <h1 class="text-lg font-bold">Dashboard Analisis Sejarah — PBD & UASA</h1>
+        <div class="muted text-sm">SK Satu Sultan Alam Shah • 2025</div>
       </div>
-      <nav class="space-x-3">
-        <button id="nav-pbd" class="tab-button px-3 py-1 text-sm bg-sky-600 text-white rounded">PBD</button>
-        <button id="nav-uasa" class="tab-button px-3 py-1 text-sm border rounded">UASA</button>
-        <button id="download-all" class="px-3 py-1 text-sm border rounded">Muat Turun HTML</button>
-      </nav>
     </div>
-  </header>
+    <div class="flex gap-2">
+      <button id="nav-pbd" class="px-3 py-1 rounded bg-sky-600 text-white text-sm">PBD</button>
+      <button id="nav-uasa" class="px-3 py-1 rounded border text-sm">UASA</button>
+      <button id="download-all" class="px-3 py-1 rounded border text-sm">Muat Turun HTML</button>
+    </div>
+  </div>
+</header>
 
-  <main class="container mx-auto px-6 py-8 space-y-8">
+<main class="container mx-auto px-6 py-8 space-y-8">
 
-    <!-- PBD SECTION -->
-    <section id="section-pbd">
-      <!-- Student counts -->
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-        <div class="card p-5 flex items-center space-x-4 bg-sky-50 border border-sky-100 rounded">
-          <div class="bg-sky-100 p-3 rounded-full"><i data-lucide="user" class="w-6 h-6 text-sky-600"></i></div>
-          <div>
-            <h2 class="text-md font-bold text-gray-600">Tahun 4</h2>
-            <p class="text-3xl font-extrabold"><span class="count-up" data-value="58">0</span> <span class="text-base font-medium text-gray-500">Murid</span></p>
-          </div>
+  <!-- PBD -->
+  <section id="section-pbd">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+      <div class="card flex items-center gap-4">
+        <div class="p-3 bg-sky-50 rounded"><i data-lucide="users" class="w-6 h-6 text-sky-600"></i></div>
+        <div>
+          <div class="text-sm text-gray-600">Tahun 4</div>
+          <div class="text-2xl font-extrabold">58 <span class="muted text-sm">Murid</span></div>
         </div>
-        <div class="card p-5 flex items-center space-x-4 bg-amber-50 border border-amber-100 rounded">
-          <div class="bg-amber-100 p-3 rounded-full"><i data-lucide="user" class="w-6 h-6 text-amber-600"></i></div>
-          <div>
-            <h2 class="text-md font-bold text-gray-600">Tahun 5</h2>
-            <p class="text-3xl font-extrabold"><span class="count-up" data-value="60">0</span> <span class="text-base font-medium text-gray-500">Murid</span></p>
-          </div>
+      </div>
+      <div class="card flex items-center gap-4">
+        <div class="p-3 bg-amber-50 rounded"><i data-lucide="users" class="w-6 h-6 text-amber-600"></i></div>
+        <div>
+          <div class="text-sm text-gray-600">Tahun 5</div>
+          <div class="text-2xl font-extrabold">60 <span class="muted text-sm">Murid</span></div>
         </div>
-        <div class="card p-5 flex items-center space-x-4 bg-rose-50 border border-rose-100 rounded">
-          <div class="bg-rose-100 p-3 rounded-full"><i data-lucide="user" class="w-6 h-6 text-rose-600"></i></div>
-          <div>
-            <h2 class="text-md font-bold text-gray-600">Tahun 6</h2>
-            <p class="text-3xl font-extrabold"><span class="count-up" data-value="53">0</span> <span class="text-base font-medium text-gray-500">Murid</span></p>
-          </div>
+      </div>
+      <div class="card flex items-center gap-4">
+        <div class="p-3 bg-rose-50 rounded"><i data-lucide="users" class="w-6 h-6 text-rose-600"></i></div>
+        <div>
+          <div class="text-sm text-gray-600">Tahun 6</div>
+          <div class="text-2xl font-extrabold">53 <span class="muted text-sm">Murid</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="flex items-center justify-between mb-4">
+        <div>
+          <h2 class="text-lg font-semibold">Perbandingan Pertengahan vs Akhir — Per Kelas</h2>
+          <div class="muted text-sm">Data dimasukkan terus (fixed) — tiada muat naik diperlukan.</div>
         </div>
       </div>
 
-      <div class="bg-white p-4 rounded shadow mb-6">
-        <div class="flex items-center justify-between mb-3">
-          <h2 class="text-lg font-semibold">PBD Sejarah — Perbandingan Pertengahan vs Akhir</h2>
-          <div class="small-meta">Masukkan data Sesi Akhir dalam format JSON di bawah jika perlu</div>
-        </div>
-
-        <div class="space-y-3"><p class="text-sm text-gray-600">Data PBD adalah tetap dan dipaparkan terus dalam carta tanpa muat naik.</p><div id="pbd-summary" class="text-sm text-gray-600 mt-2"></div>
-        </div>
-
+      <div class="border-b mb-4">
+        <nav id="sej-year-tabs" class="flex gap-2 -mb-px"></nav>
       </div>
 
-      <!-- Sejarah tabs -->
-      <div class="bg-white p-4 rounded shadow">
-        <div class="border-b border-gray-200 mb-4">
-          <nav class="flex flex-wrap -mb-px" id="sej-year-tabs"></nav>
-        </div>
-        <div id="sej-year-content"></div>
-      </div>
-    </section>
+      <div id="sej-year-content"></div>
+    </div>
+  </section>
 
-    <!-- UASA SECTION -->
-    <section id="section-uasa" class="section-hidden">
-      <div class="bg-white p-4 rounded shadow mb-6">
-        <h2 class="font-semibold mb-2">Input Data UASA (Gred A/B/C/D + TD jika ada)</h2>
-        <p class="text-sm text-gray-600 mb-2">JSON contoh telah diisi berdasarkan data Bell — boleh ubah jika perlu.</p>
-        <p class="text-sm text-gray-600">Data UASA adalah tetap dan dipaparkan terus dalam dashboard.</p>
-          <button id="uasa-load" class="px-4 py-2 bg-sky-600 text-white rounded">Muatkan & Papar</button>
-          <button id="uasa-clear" class="px-4 py-2 border rounded">Kosongkan</button>
-        </div>
-        <p id="uasa-msg" class="text-sm text-red-600 mt-2"></p>
-      </div>
+  <!-- UASA -->
+  <section id="section-uasa" class="section-hidden">
+    <div class="card">
+      <h3 class="font-semibold mb-2">UASA — Ringkasan Gred (Fixed)</h3>
+      <div class="muted text-sm">Data UASA telah disetkan daripada sumber Bell.</div>
+    </div>
 
-      <div id="uasa-results" class="hidden">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div class="bg-white p-4 rounded shadow">
-            <h3 class="font-semibold mb-2">Ringkasan Per Tahun</h3>
-            <div id="summary-list" class="text-sm space-y-2"></div>
+    <div id="uasa-results" class="mt-4">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="card">
+          <h4 class="font-semibold mb-2">Ringkasan Per Tahun</h4>
+          <div id="summary-list" class="text-sm"></div>
+        </div>
+        <div class="card">
+          <h4 class="font-semibold mb-2">Carta Perbandingan</h4>
+          <div class="flex gap-2 mb-3">
+            <select id="chart-year-select" class="border rounded px-3 py-1 text-sm">
+              <option value="tahun4">Tahun 4</option>
+              <option value="tahun5">Tahun 5</option>
+              <option value="tahun6">Tahun 6</option>
+            </select>
+            <select id="chart-mode" class="border rounded px-3 py-1 text-sm">
+              <option value="by-class">By Class (stacked)</option>
+              <option value="aggregate">Aggregate (per tahun)</option>
+            </select>
           </div>
-          <div class="bg-white p-4 rounded shadow">
-            <h3 class="font-semibold mb-2">Carta Perbandingan (Pilih Tahun)</h3>
-            <div class="flex gap-2 mb-3">
-              <select id="chart-year-select" class="border rounded px-3 py-1 text-sm">
-                <option value="tahun4">Tahun 4</option>
-                <option value="tahun5">Tahun 5</option>
-                <option value="tahun6">Tahun 6</option>
-              </select>
-              <select id="chart-mode" class="border rounded px-3 py-1 text-sm">
-                <option value="by-class">By Class (stacked)</option>
-                <option value="aggregate">Aggregate (per tahun)</option>
-              </select>
-            </div>
-            <div class="chart-container"><canvas id="uasaChart"></canvas></div>
-          </div>
-        </div>
-
-        <div class="mt-6 bg-white p-4 rounded shadow">
-          <h3 class="font-semibold mb-2">Butiran Kelas (Gred & Peratus)</h3>
-          <div id="class-details" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
-        </div>
-
-        <div class="mt-6 text-right">
-          <button id="export-json" class="px-4 py-2 bg-emerald-600 text-white rounded">Eksport JSON</button>
+          <div class="chart-container"><canvas id="uasaChart"></canvas></div>
         </div>
       </div>
-    </section>
 
-  </main>
+      <div class="card mt-4">
+        <h4 class="font-semibold mb-2">Butiran Kelas</h4>
+        <div id="class-details" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+      </div>
+    </div>
+  </section>
 
-  <footer class="text-center text-sm text-gray-500 py-4">Gabungan Dashboard — PBD & UASA</footer>
+</main>
+
+<footer class="text-center text-sm text-gray-500 py-6">© 2025 SK Satu Sultan Alam Shah — Dashboard (Fixed)</footer>
 
 <script>
-// Wrap initialization in DOMContentLoaded to ensure lucide is available and DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
-  // Safely initialize lucide icons only after the lucide script has loaded
-  function initLucide(){
-    if (window.lucide && typeof lucide.createIcons === 'function') {
-      try { lucide.createIcons(); } catch(e) { console.warn('lucide.createIcons() failed:', e); }
-    } else {
-      // If lucide not ready yet, try again after window load
-      window.addEventListener('load', () => { if (window.lucide && typeof lucide.createIcons === 'function') { try { lucide.createIcons(); } catch(e) { console.warn('lucide.createIcons() failed on load:', e); } } });
-    }
-  }
+  // safe lucide
+  function initLucide(){ if(window.lucide && typeof lucide.createIcons==='function'){ try{ lucide.createIcons(); }catch(e){console.warn(e);} } else { window.addEventListener('load', ()=>{ if(window.lucide && typeof lucide.createIcons==='function') try{ lucide.createIcons(); }catch(e){console.warn(e);} }); } }
   initLucide();
 
-  // --- Shared utils ---
-  function safeParseJSON(s){ try{return JSON.parse(s);}catch(e){return null;} }
+  // NAV
+  const navPbd = document.getElementById('nav-pbd'), navUasa = document.getElementById('nav-uasa');
+  navPbd.addEventListener('click', ()=>{ document.getElementById('section-pbd').classList.remove('section-hidden'); document.getElementById('section-uasa').classList.add('section-hidden'); navPbd.classList.add('bg-sky-600','text-white'); navUasa.classList.remove('bg-sky-600','text-white'); });
+  navUasa.addEventListener('click', ()=>{ document.getElementById('section-uasa').classList.remove('section-hidden'); document.getElementById('section-pbd').classList.add('section-hidden'); navUasa.classList.add('bg-sky-600','text-white'); navPbd.classList.remove('bg-sky-600','text-white'); });
 
-  // --- NAV ---
-  document.getElementById('nav-pbd').addEventListener('click', ()=>{ document.getElementById('section-pbd').classList.remove('section-hidden'); document.getElementById('section-uasa').classList.add('section-hidden'); document.getElementById('nav-pbd').classList.add('bg-sky-600','text-white'); document.getElementById('nav-uasa').classList.remove('bg-sky-600','text-white'); });
-  document.getElementById('nav-uasa').addEventListener('click', ()=>{ document.getElementById('section-uasa').classList.remove('section-hidden'); document.getElementById('section-pbd').classList.add('section-hidden'); document.getElementById('nav-uasa').classList.add('bg-sky-600','text-white'); document.getElementById('nav-pbd').classList.remove('bg-sky-600','text-white'); });
-
-  // Download current html
   document.getElementById('download-all').addEventListener('click', ()=>{
     const blob = new Blob([document.documentElement.outerHTML], { type: 'text/html' });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement('a'); a.href = url; a.download = 'dashboard-pbd-uasa-index.html'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+    const a = document.createElement('a'); a.href = url; a.download = 'dashboard-pbd-uasa-fixed.html'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
   });
 
-  // --- PBD code (kept lightweight) ---
+  // --- FIXED DATA (Bell) -----------------------------------
   const dataSejPertengahan = {
-    tahun4: [0,1,41,16,0,0],
-    tahun5: [0,3,5,52,0,0],
-    tahun6: [0,0,19,28,6,0]
+    tahun4: { '4 Cerdas':[0,0,22,7,0,0], '4 Cerdik':[1,19,7,2,0,0] },
+    tahun5: { '5 Cerdas':[0,0,0,21,9,0], '5 Cerdik':[0,3,5,19,3,0] },
+    tahun6: { '6 Cerdas':[0,0,0,7,19,1], '6 Cerdik':[0,0,19,5,2,0] }
   };
-  let dataSejAkhir = { tahun4: [0,0,30,20,8,0], tahun5: [0,2,10,45,3,0], tahun6: [0,0,12,33,8,0] };
+  const dataSejAkhir = {
+    tahun4: { '4 Cerdas':[0,0,0,11,10,8], '4 Cerdik':[0,1,19,9,0,0] },
+    tahun5: { '5 Cerdas':[0,0,0,1,16,13], '5 Cerdik':[0,0,4,10,16,0] },
+    tahun6: { '6 Cerdas':[0,0,0,0,16,11], '6 Cerdik':[0,0,0,18,8,0] }
+  };
 
   const chartLabels = ['TP1','TP2','TP3','TP4','TP5','TP6'];
-  const chartColors = ['#ef4444','#f97316','#f59e0b','#84cc16','#22c55e','#10b981'];
-  const commonChartOptions = { responsive:true, maintainAspectRatio:false, animation:{duration:700}, plugins:{ legend:{display:false} }, scales:{ y:{ beginAtZero:true, title:{ display:true, text:'Bilangan Murid' } }, x:{ title:{ display:true, text:'Tahap Penguasaan (TP)' } } } };
+  const palette = { pert:'#2563eb', akhir:'#10b981' };
 
-  function createChart(canvasId, dataArray, extraOpts = {}){
-    const ctx = document.getElementById(canvasId); if(!ctx) return null;
-    const datasets = Array.isArray(dataArray[0]) ? dataArray.map((d,i)=>({ data:d, backgroundColor:chartColors, borderRadius:6, label: i===0? 'Pertengahan':'Akhir' })) : [{ data:dataArray, backgroundColor:chartColors, borderRadius:6 }];
-    return new Chart(ctx.getContext('2d'), { type:'bar', data:{ labels:chartLabels, datasets }, options:Object.assign({}, commonChartOptions, extraOpts) });
+  function createChart(canvasId, datasets){
+    const el = document.getElementById(canvasId); if(!el) return;
+    return new Chart(el.getContext('2d'), { type:'bar', data:{ labels:chartLabels, datasets }, options:{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{position:'top'} }, scales:{ y:{ beginAtZero:true, title:{ display:true, text:'Bilangan Murid' } } } } });
   }
 
-  function renderSejTabs(mode='pertengahan'){
-    const tabs = document.getElementById('sej-year-tabs'); const container = document.getElementById('sej-year-content'); tabs.innerHTML=''; container.innerHTML='';
-    Object.keys(dataSejPertengahan).forEach((k,idx)=>{
-      const year = k.replace('tahun',''); const isActive = idx===0;
-      const btn = document.createElement('button'); btn.className = `tab-button year-tab-button py-2 px-4 text-sm text-gray-600 ${isActive? 'active':''}`; btn.dataset.parent='content-sej'; btn.dataset.target=`sej-tahun${year}`; btn.textContent=`Tahun ${year}`; tabs.appendChild(btn);
-      const contentDiv = document.createElement('div'); contentDiv.id = `sej-tahun${year}`; contentDiv.className = `year-tab-content ${isActive? 'active':''}`;
-      const pert = dataSejPertengahan[`tahun${year}`]; const akhir = dataSejAkhir[`tahun${year}`];
-      let chartHtml = `<div class="chart-container"><canvas id="chartSej${year}"></canvas></div>`;
-      if(mode === 'compare') chartHtml = `<div class="grid grid-cols-1 md:grid-cols-2 gap-4"><div class="chart-container"><canvas id="chartSej${year}Compare"></canvas></div><div class="compare-highlight"><h4 class="font-semibold">Perubahan (Akhir - Pertengahan)</h4><ul class="mt-2 text-sm" id="changeList${year}"></ul></div></div>`;
-      contentDiv.innerHTML = `<div class="space-y-6"><div><h3 class="text-lg font-semibold mb-2 text-center text-sky-800">Taburan TP Sejarah Tahun ${year}</h3>${chartHtml}</div><div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="isuArea${year}"></div><div class="text-sm text-gray-500">Sumber: Data Pertengahan. Muat naik Sesi Akhir untuk perbandingan.</div></div>`;
-      container.appendChild(contentDiv);
-      setTimeout(()=>{
-        if(mode === 'pertengahan') createChart(`chartSej${year}`, pert);
-        else if(mode === 'akhir') createChart(`chartSej${year}`, akhir);
-        else { createChart(`chartSej${year}Compare`, [pert, akhir]); const listEl = document.getElementById(`changeList${year}`); if(listEl){ listEl.innerHTML=''; for(let i=0;i<6;i++){ const p = (akhir[i]||0)-(pert[i]||0); const pct = (pert[i]||0)===0 ? (akhir[i]||0)===0 ? 0 : 100 : ((p/(pert[i]||1))*100).toFixed(1); const sign = p>0? '+':''; listEl.innerHTML += `<li>TP${i+1}: ${pert[i]||0} → ${akhir[i]||0} (Δ ${sign}${p}, ${pct}% )</li>`; } } }
-      },60);
-      const isuArea = contentDiv.querySelector(`#isuArea${year}`); const tp1_2 = (pert[0]||0)+(pert[1]||0); const tp3 = pert[2]||0; const tp4 = pert[3]||0; if(tp1_2>0) isuArea.innerHTML += `<div class="bg-orange-50 border-l-4 border-orange-500 p-4 rounded-r-lg"><h4 class="font-bold text-orange-800">Isu: TP1 & TP2 (${tp1_2} Murid)</h4><p class="text-sm mt-1">Kefahaman asas masih lemah atau kehadiran tidak konsisten.</p></div>`; if(tp3>0) isuArea.innerHTML += `<div class="bg-yellow-50 border-l-4 border-yellow-500 p-4 rounded-r-lg"><h4 class="font-bold text-yellow-800">Isu: TP3 (${tp3} Murid)</h4><p class="text-sm mt-1">Penguasaan sederhana, perlukan pengayaan ke TP4.</p></div>`; if(tp4>0) isuArea.innerHTML += `<div class="bg-lime-50 border-l-4 border-lime-500 p-4 rounded-r-lg"><h4 class="font-bold text-lime-800">Isu: TP4 (${tp4} Murid)</h4><p class="text-sm mt-1">Murid mencapai tahap baik untuk beberapa kandungan.</p></div>`;
+  // render per-year per-class (Pert vs Akhir)
+  function renderSej(){
+    const tabs = document.getElementById('sej-year-tabs'), content = document.getElementById('sej-year-content');
+    tabs.innerHTML=''; content.innerHTML='';
+    Object.keys(dataSejPertengahan).forEach((yk, idx) => {
+      const year = yk.replace('tahun',''), active = idx===0;
+      const btn = document.createElement('button'); btn.className='tab-button py-2 px-4 text-sm '+(active?'active':''); btn.textContent='Tahun '+year; tabs.appendChild(btn);
+
+      const section = document.createElement('div'); if(!active) section.classList.add('section-hidden');
+      section.id = 'sej-tahun'+year;
+      const grid = document.createElement('div'); grid.className='grid grid-cols-1 md:grid-cols-2 gap-4';
+
+      Object.keys(dataSejPertengahan[yk]).forEach(cls=>{
+        const card = document.createElement('div'); card.className='card';
+        const h = document.createElement('h4'); h.className='font-semibold'; h.textContent = cls + ' — Pertengahan vs Akhir';
+        const wrap = document.createElement('div'); wrap.className='chart-container mt-3';
+        const canvas = document.createElement('canvas'); const safe = 'chart'+year+cls.replace(/\s+/g,'');
+        canvas.id = safe; wrap.appendChild(canvas);
+        const change = document.createElement('div'); change.className='muted text-sm mt-2'; change.id = 'change'+safe;
+
+        card.appendChild(h); card.appendChild(wrap); card.appendChild(change);
+        grid.appendChild(card);
+
+        const pert = dataSejPertengahan[yk][cls] || [0,0,0,0,0,0];
+        const akhir = (dataSejAkhir[yk] && dataSejAkhir[yk][cls]) ? dataSejAkhir[yk][cls] : [0,0,0,0,0,0];
+
+        setTimeout(()=>{ createChart(safe, [ { label:'Pertengahan', data:pert, backgroundColor:palette.pert }, { label:'Akhir', data:akhir, backgroundColor:palette.akhir } ]);
+          // change summary
+          let html = '<ul class="list-disc list-inside">';
+          for(let i=0;i<6;i++){ const d=(akhir[i]||0)-(pert[i]||0); html += '<li>TP'+(i+1)+': '+(pert[i]||0)+' → '+(akhir[i]||0)+' (Δ '+(d>0?'+':'')+d+')</li>'; }
+          html += '</ul>'; document.getElementById('change'+safe).innerHTML = html;
+        },20);
+      });
+
+      section.appendChild(grid); content.appendChild(section);
+
+      btn.addEventListener('click', ()=>{
+        document.querySelectorAll('#sej-year-content > div').forEach(d=>d.classList.add('section-hidden'));
+        section.classList.remove('section-hidden');
+        document.querySelectorAll('#sej-year-tabs .tab-button').forEach(b=>b.classList.remove('active'));
+        btn.classList.add('active');
+      });
     });
   }
-  renderSejTabs('pertengahan');
+  renderSej();
 
-  // PBD controls
-  document.getElementById('pbd-use-sample').addEventListener('click', ()=>{ dataSejAkhir = { tahun4:[0,0,30,20,8,0], tahun5:[0,2,10,45,3,0], tahun6:[0,0,12,33,8,0] }; document.getElementById('pbd-akhir-input').value = JSON.stringify(dataSejAkhir,null,2); renderSejTabs(document.getElementById('sej-year-tabs')?.dataset.mode || 'pertengahan'); showPbdSummary(); alert('Data contoh Sesi Akhir dimuatkan. Tukar mod ke Bandingkan untuk lihat perbezaan.'); });
+  // --- UASA fixed data (Bell) ---
+  const uasaData = {
+    tahun4: {
+      '4 Cerdas': { TD:1, A:0, B:0, C:19, D:9 },
+      '4 Cerdik': { TD:1, A:1, B:12, C:11, D:4 }
+    },
+    tahun5: {
+      '5 Cerdas': { TD:0, A:5, B:13, C:12, D:0 },
+      '5 Cerdik': { TD:2, A:0, B:9, C:12, D:7 }
+    },
+    tahun6: {
+      '6 Cerdas': { TD:0, A:3, B:16, C:8, D:0 },
+      '6 Cerdik': { TD:0, A:0, B:7, C:13, D:6 }
+    }
+  };
 
-  document.getElementById('load-pbd-akhir').addEventListener('click', ()=>{ const raw = document.getElementById('pbd-akhir-input').value.trim(); if(!raw){ alert('Sila tampal JSON.'); return; } try{ const parsed = JSON.parse(raw); ['tahun4','tahun5','tahun6'].forEach(k=>{ if(!Array.isArray(parsed[k]) || parsed[k].length!==6) throw new Error('Setiap tahun mesti ada array 6 nilai'); }); dataSejAkhir = parsed; renderSejTabs('compare'); showPbdSummary(); alert('Data Sesi Akhir berjaya dimuatkan.'); }catch(err){ alert('Gagal parse JSON: '+err.message); } });
-
-  function showPbdSummary(){ const el = document.getElementById('pbd-summary'); el.innerHTML=''; ['tahun4','tahun5','tahun6'].forEach(k=>{ const p = dataSejPertengahan[k]; const a = dataSejAkhir[k]; if(!p||!a) return; const tpP = p.reduce((s,v)=>s+v,0); const tpA = a.reduce((s,v)=>s+v,0); const delta = tpA-tpP; const pct = tpP===0? (tpA===0?0:100) : ((delta/tpP)*100).toFixed(1); el.innerHTML += `<div class="mb-1">${k.replace('tahun','Tahun ')}: Pert ${tpP} vs Akhir ${tpA} — Δ ${delta} (${pct}%)</div>`; }); }
-
-  // --- UASA code ---
-  let uasaData = null; let currentChart = null;
-
-  function renderUasaSummary(){ const el = document.getElementById('summary-list'); el.innerHTML=''; ['tahun4','tahun5','tahun6'].forEach(k=>{ if(!uasaData[k]) return; const classes = Object.keys(uasaData[k]); let totalA=0, totalB=0, totalC=0, totalD=0, totalTD=0; classes.forEach(c=>{ const g = uasaData[k][c]; totalA+=(g.A||0); totalB+=(g.B||0); totalC+=(g.C||0); totalD+=(g.D||0); totalTD+=(g.TD||0); }); const total = totalA+totalB+totalC+totalD+totalTD || 1; el.innerHTML += `<div class="mb-2"><strong>${k.replace('tahun','Tahun ')}:</strong> Jumlah murid ${total} — A: ${totalA} (${((totalA/total)*100).toFixed(1)}%), B: ${totalB} (${((totalB/total)*100).toFixed(1)}%), C: ${totalC} (${((totalC/total)*100).toFixed(1)}%), D: ${totalD} (${((totalD/total)*100).toFixed(1)}%), TD: ${totalTD}</div>`; }); }
-
-  function renderUasaClassDetails(){ const container = document.getElementById('class-details'); container.innerHTML=''; ['tahun4','tahun5','tahun6'].forEach(k=>{ if(!uasaData[k]) return; Object.keys(uasaData[k]).forEach(cls=>{ const g = uasaData[k][cls]; const total = (g.A||0)+(g.B||0)+(g.C||0)+(g.D||0)+(g.TD||0) || 1; const html = `<div class="border p-3 rounded"><div class="flex justify-between items-center mb-2"><div class="font-semibold">${cls} (${k.replace('tahun','Tahun ')})</div><div class="text-sm text-gray-500">Jumlah: ${total}</div></div><div class="grid grid-cols-5 gap-2 text-center"><div><div class="grade-pill" style="background:#e6fffa;color:#065f46">A</div><div class="text-sm mt-1">${g.A||0}</div><div class="text-xs text-gray-500">${(((g.A||0)/total)*100).toFixed(1)}%</div></div><div><div class="grade-pill" style="background:#fff7ed;color:#92400e">B</div><div class="text-sm mt-1">${g.B||0}</div><div class="text-xs text-gray-500">${(((g.B||0)/total)*100).toFixed(1)}%</div></div><div><div class="grade-pill" style="background:#fff1f2;color:#9f1239">C</div><div class="text-sm mt-1">${g.C||0}</div><div class="text-xs text-gray-500">${(((g.C||0)/total)*100).toFixed(1)}%</div></div><div><div class="grade-pill" style="background:#eff6ff;color:#1e3a8a">D</div><div class="text-sm mt-1">${g.D||0}</div><div class="text-xs text-gray-500">${(((g.D||0)/total)*100).toFixed(1)}%</div></div><div><div class="grade-pill" style="background:#f3f4f6;color:#374151">TD</div><div class="text-sm mt-1">${g.TD||0}</div><div class="text-xs text-gray-500">${(((g.TD||0)/total)*100).toFixed(1)}%</div></div></div></div>`; container.innerHTML += html; }); }); }
-
-  function renderUasaChart(){ if(!uasaData) return; const year = document.getElementById('chart-year-select').value; const mode = document.getElementById('chart-mode').value; const ctx = document.getElementById('uasaChart').getContext('2d'); if(currentChart) currentChart.destroy(); if(mode === 'aggregate'){ let A=0,B=0,C=0,D=0,TD=0; Object.keys(uasaData[year]||{}).forEach(c=>{ const g = uasaData[year][c]; A+=(g.A||0); B+=(g.B||0); C+=(g.C||0); D+=(g.D||0); TD+=(g.TD||0); }); const labels = ['A','B','C','D','TD']; const data = [A,B,C,D,TD]; currentChart = new Chart(ctx,{ type:'bar', data:{ labels, datasets:[{ data, backgroundColor:['#10b981','#f97316','#ef4444','#60a5fa','#94a3b8'] }] }, options:{ responsive:true, maintainAspectRatio:false } }); } else { // stacked by class
-    const classes = Object.keys(uasaData[year]||{}); const datasets = ['A','B','C','D','TD'].map(g=>({ label:g, data: classes.map(c=> (uasaData[year][c]&&uasaData[year][c][g])||0 ), backgroundColor: g==='A'? '#10b981': g==='B'? '#f97316': g==='C'? '#ef4444': g==='D'? '#60a5fa':'#94a3b8' })); currentChart = new Chart(ctx,{ type:'bar', data:{ labels: classes, datasets }, options:{ responsive:true, maintainAspectRatio:false, scales:{ x:{ stacked:true }, y:{ stacked:true } } } }); }
+  // UASA render functions
+  function renderUasaSummary(){
+    const el = document.getElementById('summary-list'); el.innerHTML='';
+    Object.keys(uasaData).forEach(k=>{
+      const classes = Object.keys(uasaData[k]);
+      const totals = classes.reduce((acc,c)=>{
+        const g=uasaData[k][c];
+        acc.A += g.A||0; acc.B += g.B||0; acc.C += g.C||0; acc.D += g.D||0; acc.TD += g.TD||0; return acc;
+      }, {A:0,B:0,C:0,D:0,TD:0});
+      const sum = totals.A+totals.B+totals.C+totals.D+totals.TD || 1;
+      el.innerHTML += `<div class="mb-2"><strong>${k.replace('tahun','Tahun ')}</strong>: ${sum} murid — A: ${totals.A} (${((totals.A/sum)*100).toFixed(1)}%), B: ${totals.B} (${((totals.B/sum)*100).toFixed(1)}%), C: ${totals.C} (${((totals.C/sum)*100).toFixed(1)}%), D: ${totals.D} (${((totals.D/sum)*100).toFixed(1)}%)</div>`;
+    });
   }
 
-  // UASA controls
-  document.getElementById('uasa-load').addEventListener('click', ()=>{ const raw = document.getElementById('uasa-input').value.trim(); const msg = document.getElementById('uasa-msg'); msg.textContent=''; const parsed = safeParseJSON(raw); if(!parsed){ msg.textContent='Gagal parse JSON. Pastikan format betul.'; return; } uasaData = parsed; document.getElementById('uasa-results').classList.remove('hidden'); renderUasaSummary(); renderUasaClassDetails(); renderUasaChart(); });
+  function renderUasaClassDetails(){
+    const container = document.getElementById('class-details'); container.innerHTML='';
+    Object.keys(uasaData).forEach(k=>{
+      Object.keys(uasaData[k]).forEach(cls=>{
+        const g = uasaData[k][cls];
+        const total = (g.A||0)+(g.B||0)+(g.C||0)+(g.D||0)+(g.TD||0) || 1;
+        const div = document.createElement('div'); div.className='card';
+        div.innerHTML = `<div class="flex justify-between items-center mb-2"><div class="font-semibold">${cls} (${k.replace('tahun','Tahun ')})</div><div class="muted">Jumlah: ${total}</div></div>
+          <div class="grid grid-cols-5 gap-2 text-center">
+            <div><div class="pill" style="background:#e6fffa;color:#065f46">A</div><div class="text-sm mt-1">${g.A||0}</div><div class="muted text-xs">${(((g.A||0)/total)*100).toFixed(1)}%</div></div>
+            <div><div class="pill" style="background:#fff7ed;color:#92400e">B</div><div class="text-sm mt-1">${g.B||0}</div><div class="muted text-xs">${(((g.B||0)/total)*100).toFixed(1)}%</div></div>
+            <div><div class="pill" style="background:#fff1f2;color:#9f1239">C</div><div class="text-sm mt-1">${g.C||0}</div><div class="muted text-xs">${(((g.C||0)/total)*100).toFixed(1)}%</div></div>
+            <div><div class="pill" style="background:#eff6ff;color:#1e3a8a">D</div><div class="text-sm mt-1">${g.D||0}</div><div class="muted text-xs">${(((g.D||0)/total)*100).toFixed(1)}%</div></div>
+            <div><div class="pill" style="background:#f3f4f6;color:#374151">TD</div><div class="text-sm mt-1">${g.TD||0}</div><div class="muted text-xs">${(((g.TD||0)/total)*100).toFixed(1)}%</div></div>
+          </div>`;
+        container.appendChild(div);
+      });
+    });
+  }
 
-  document.getElementById('uasa-clear').addEventListener('click', ()=>{ document.getElementById('uasa-input').value=''; document.getElementById('uasa-results').classList.add('hidden'); uasaData = null; });
+  // UASA chart
+  let uasaChart = null;
+  function renderUasaChart(){
+    const ctxEl = document.getElementById('uasaChart'); if(!ctxEl) return;
+    if(uasaChart) uasaChart.destroy();
+    const year = document.getElementById('chart-year-select').value;
+    const mode = document.getElementById('chart-mode').value;
+    if(mode === 'aggregate'){
+      let A=0,B=0,C=0,D=0,TD=0;
+      Object.keys(uasaData[year]).forEach(c=>{ const g=uasaData[year][c]; A+=g.A||0; B+=g.B||0; C+=g.C||0; D+=g.D||0; TD+=g.TD||0; });
+      uasaChart = new Chart(ctxEl.getContext('2d'), { type:'bar', data:{ labels:['A','B','C','D','TD'], datasets:[{ data:[A,B,C,D,TD], backgroundColor:['#10b981','#f97316','#ef4444','#60a5fa','#94a3b8'] }] }, options:{ responsive:true, maintainAspectRatio:false } });
+    } else {
+      const classes = Object.keys(uasaData[year]);
+      const datasets = ['A','B','C','D','TD'].map(s => ({ label:s, data: classes.map(c=> (uasaData[year][c]&&uasaData[year][c][s])||0 ), backgroundColor: s==='A'? '#10b981': s==='B'? '#f97316': s==='C'? '#ef4444': s==='D'? '#60a5fa':'#94a3b8' }));
+      uasaChart = new Chart(ctxEl.getContext('2d'), { type:'bar', data:{ labels:classes, datasets }, options:{ responsive:true, maintainAspectRatio:false, scales:{ x:{ stacked:true }, y:{ stacked:true } } } });
+    }
+  }
 
+  // init UASA display (fixed)
+  renderUasaSummary();
+  renderUasaClassDetails();
+  renderUasaChart();
   document.getElementById('chart-year-select').addEventListener('change', renderUasaChart);
   document.getElementById('chart-mode').addEventListener('change', renderUasaChart);
 
-  document.getElementById('export-json').addEventListener('click', ()=>{ if(!uasaData) return; const blob = new Blob([JSON.stringify(uasaData,null,2)],{type:'application/json'}); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href=url; a.download='uasa-sejarah.json'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url); });
-
-  // --- small UI: make first nav active ---
-  document.getElementById('nav-pbd').click();
-
-  // count-up
-  function animateCountUp(el){ const finalValue = parseInt(el.dataset.value,10)||0; let cur=0; const dur=1000; const step=Math.max(1, Math.ceil(finalValue/(dur/16))); function t(){ cur+=step; if(cur<finalValue){ el.textContent=cur; requestAnimationFrame(t); } else el.textContent=finalValue; } t(); }
-  const obs = new IntersectionObserver((entries,ob)=>{ entries.forEach(en=>{ if(en.isIntersecting){ animateCountUp(en.target); ob.unobserve(en.target); } }); },{ threshold:0.3 }); document.querySelectorAll('.count-up').forEach(el=>obs.observe(el));
-
-}); // end DOMContentLoaded
+  // default view
+  navPbd.click();
+});
 </script>
+
 </body>
 </html>
