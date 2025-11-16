@@ -1,337 +1,278 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ms">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Analisis PBD - SK Satu Sultan Alam Shah</title>
-    
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    
-    <!-- Google Fonts: Inter -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    
-    <!-- Lucide Icons -->
-    <script src="https://unpkg.com/lucide@latest"></script>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Dashboard — PBD & UASA Sejarah | SK Satu Sultan Alam Shah</title>
 
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f8fafc; /* slate-50 */
-        }
-        .card {
-            background-color: white;
-            border-radius: 0.75rem; /* rounded-xl */
-            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1); /* shadow-md */
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1); /* shadow-lg */
-        }
-        .chart-container {
-            position: relative;
-            height: 300px;
-            width: 100%;
-        }
-        .tab-button {
-            transition: all 0.3s ease;
-            border-bottom: 3px solid transparent;
-        }
-        .tab-button.active {
-            border-bottom-color: #4f46e5; /* indigo-600 */
-            color: #312e81; /* indigo-900 */
-            font-weight: 600;
-        }
-        .subject-tab-content, .year-tab-content {
-            display: none;
-        }
-        .subject-tab-content.active, .year-tab-content.active {
-            display: block;
-        }
-    </style>
+  <!-- Tailwind + Chart.js + Lucide -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.264.0/dist/lucide.min.js"></script>
+
+  <style>
+    :root{--muted:#6b7280;--card-bg:#ffffff}
+    body{background:linear-gradient(180deg,#f8fafc 0%, #ffffff 100%);font-family:Inter,ui-sans-serif,system-ui,-apple-system,'Segoe UI',Roboto,'Helvetica Neue',Arial}
+    .chart-container{position:relative;height:320px;width:100%}
+    .tab-button.active{color:#075985;font-weight:700;border-bottom:3px solid currentColor}
+    .section-hidden{display:none}
+    .pill{display:inline-block;padding:.25rem .5rem;border-radius:.375rem;font-weight:600}
+    .card{background:var(--card-bg);border-radius:.5rem;box-shadow:0 6px 18px rgba(15,23,42,0.06);padding:1rem}
+    .muted{color:var(--muted)}
+    .kv{font-size:.9rem;color:#334155}
+  </style>
 </head>
 <body class="text-gray-800">
 
-    <!-- Header -->
-    <header class="bg-white shadow-sm sticky top-0 z-20">
-        <div class="container mx-auto px-6 py-4 flex justify-between items-center flex-wrap">
-            <div>
-                <h1 class="text-xl md:text-2xl font-bold text-gray-900">Analisis PBD (Pertengahan Sesi 2025)</h1>
-                <p class="text-sm text-gray-600">SK Satu Sultan Alam Shah, Petaling Utama</p>
-            </div>
-            <div class="text-right mt-2 md:mt-0">
-                 <p class="text-sm font-medium text-gray-500">Tarikh DP PBD</p>
-                 <p class="font-bold text-indigo-600">18 Ogos 2025</p>
-            </div>
+  <!-- Header -->
+  <header class="sticky top-0 z-40 bg-white/80 backdrop-blur-sm border-b">
+    <div class="container mx-auto px-6 py-4 flex items-center justify-between">
+      <div class="flex items-center gap-4">
+        <div class="p-2 bg-sky-100 rounded-md"><i data-lucide="book" class="w-6 h-6 text-sky-600"></i></div>
+        <div>
+          <h1 class="text-lg font-bold">Dashboard Analisis Sejarah — PBD & UASA</h1>
+          <div class="muted text-sm">SK Satu Sultan Alam Shah • 2025</div>
         </div>
-    </header>
+      </div>
 
-    <!-- Main Content -->
-    <main class="container mx-auto px-6 py-8">
+      <div class="flex items-center gap-2">
+        <button id="nav-pbd" class="px-3 py-1 rounded bg-sky-600 text-white text-sm">PBD</button>
+        <button id="nav-uasa" class="px-3 py-1 rounded border text-sm">UASA</button>
+        <button id="download-all" class="px-3 py-1 rounded border text-sm">Muat Turun HTML</button>
+      </div>
+    </div>
+  </header>
 
-        <!-- Main Tabbed Section -->
-        <section class="card p-4 sm:p-6">
-             <!-- Subject Tabs -->
-            <div class="border-b border-gray-200 mb-6">
-                <nav class="flex flex-wrap -mb-px" id="subject-tabs">
-                    <button class="tab-button subject-tab-button py-3 px-5 text-sm font-medium text-center text-gray-500 active" data-target="content-bm">
-                        <i data-lucide="book-marked" class="inline-block mr-2 w-4 h-4"></i>Bahasa Melayu
-                    </button>
-                    <button class="tab-button subject-tab-button py-3 px-5 text-sm font-medium text-center text-gray-500" data-target="content-sej">
-                        <i data-lucide="scroll-text" class="inline-block mr-2 w-4 h-4"></i>Sejarah
-                    </button>
-                     <button class="tab-button subject-tab-button py-3 px-5 text-sm font-medium text-center text-gray-500" data-target="content-sains">
-                        <i data-lucide="flask-conical" class="inline-block mr-2 w-4 h-4"></i>Sains
-                    </button>
-                    <button class="tab-button subject-tab-button py-3 px-5 text-sm font-medium text-center text-gray-500" data-target="content-bi">
-                        <i data-lucide="book-open-check" class="inline-block mr-2 w-4 h-4"></i>Bahasa Inggeris
-                    </button>
-                </nav>
-            </div>
+  <main class="container mx-auto px-6 py-8 space-y-8">
 
-            <!-- Subject Content -->
-            <div id="subject-content">
-                <!-- Bahasa Melayu Content -->
-                <div id="content-bm" class="subject-tab-content active">
-                    <div class="border-b border-gray-200 mb-6"><nav class="flex flex-wrap -mb-px" id="bm-year-tabs"></nav></div>
-                    <div id="bm-year-content"></div>
-                </div>
-
-                <!-- Sejarah Content -->
-                <div id="content-sej" class="subject-tab-content">
-                    <!-- Student Count Section for Sejarah -->
-                    <section class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                        <div class="card p-5 flex items-center space-x-4 bg-sky-50 border border-sky-200">
-                            <div class="bg-sky-100 p-3 rounded-full">
-                                <i data-lucide="user" class="w-8 h-8 text-sky-600"></i>
-                            </div>
-                            <div>
-                                <h2 class="text-md font-bold text-gray-600">Tahun 4</h2>
-                                <p class="text-3xl font-extrabold text-gray-900"><span class="count-up" data-value="58">0</span> <span class="text-base font-medium text-gray-500">Murid</span></p>
-                            </div>
-                        </div>
-                        <div class="card p-5 flex items-center space-x-4 bg-amber-50 border border-amber-200">
-                            <div class="bg-amber-100 p-3 rounded-full">
-                                <i data-lucide="user" class="w-8 h-8 text-amber-600"></i>
-                            </div>
-                            <div>
-                                <h2 class="text-md font-bold text-gray-600">Tahun 5</h2>
-                                <p class="text-3xl font-extrabold text-gray-900"><span class="count-up" data-value="60">0</span> <span class="text-base font-medium text-gray-500">Murid</span></p>
-                            </div>
-                        </div>
-                        <div class="card p-5 flex items-center space-x-4 bg-rose-50 border border-rose-200">
-                            <div class="bg-rose-100 p-3 rounded-full">
-                                <i data-lucide="user" class="w-8 h-8 text-rose-600"></i>
-                            </div>
-                            <div>
-                                <h2 class="text-md font-bold text-gray-600">Tahun 6</h2>
-                                <p class="text-3xl font-extrabold text-gray-900"><span class="count-up" data-value="53">0</span> <span class="text-base font-medium text-gray-500">Murid</span></p>
-                            </div>
-                        </div>
-                    </section>
-                     <div class="border-b border-gray-200 mb-6">
-                        <nav class="flex flex-wrap -mb-px" id="sej-year-tabs">
-                            <button class="tab-button year-tab-button py-3 px-5 text-sm font-medium text-center text-gray-500 active" data-parent="content-sej" data-target="sej-tahun4">Tahun 4</button>
-                            <button class="tab-button year-tab-button py-3 px-5 text-sm font-medium text-center text-gray-500" data-parent="content-sej" data-target="sej-tahun5">Tahun 5</button>
-                            <button class="tab-button year-tab-button py-3 px-5 text-sm font-medium text-center text-gray-500" data-parent="content-sej" data-target="sej-tahun6">Tahun 6</button>
-                        </nav>
-                    </div>
-                    <div id="sej-year-content"></div>
-                </div>
-                
-                <!-- Sains Content -->
-                <div id="content-sains" class="subject-tab-content">
-                    <div class="border-b border-gray-200 mb-6"><nav class="flex flex-wrap -mb-px" id="sains-year-tabs"></nav></div>
-                    <div id="sains-year-content"></div>
-                </div>
-
-                <!-- Bahasa Inggeris Content -->
-                <div id="content-bi" class="subject-tab-content">
-                    <div class="border-b border-gray-200 mb-6"><nav class="flex flex-wrap -mb-px" id="bi-year-tabs"></nav></div>
-                    <div id="bi-year-content"></div>
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <footer class="bg-white mt-12 py-4 border-t">
-        <div class="container mx-auto px-6 text-center text-gray-500 text-sm">
-            <p>&copy; 2025 Laporan PBD SK Satu Sultan Alam Shah.</p>
+    <!-- PBD -->
+    <section id="section-pbd">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+        <div class="card flex items-center gap-4">
+          <div class="p-3 bg-sky-50 rounded"><i data-lucide="users" class="w-6 h-6 text-sky-600"></i></div>
+          <div>
+            <div class="kv">Tahun 4</div>
+            <div class="text-2xl font-extrabold">58 <span class="muted text-sm font-medium">Murid</span></div>
+          </div>
         </div>
-    </footer>
+        <div class="card flex items-center gap-4">
+          <div class="p-3 bg-amber-50 rounded"><i data-lucide="users" class="w-6 h-6 text-amber-600"></i></div>
+          <div>
+            <div class="kv">Tahun 5</div>
+            <div class="text-2xl font-extrabold">60 <span class="muted text-sm font-medium">Murid</span></div>
+          </div>
+        </div>
+        <div class="card flex items-center gap-4">
+          <div class="p-3 bg-rose-50 rounded"><i data-lucide="users" class="w-6 h-6 text-rose-600"></i></div>
+          <div>
+            <div class="kv">Tahun 6</div>
+            <div class="text-2xl font-extrabold">53 <span class="muted text-sm font-medium">Murid</span></div>
+          </div>
+        </div>
+      </div>
 
-    <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        
-        // --- DATA OBJECTS ---
-        const dataBm = {
-            tahun1: { tp: [3, 9, 32, 12, 0, 0], isu_tp1_2: 'Asas literasi belum mantap, keliru huruf, bentuk tulisan tidak konsisten.', isu_tp3: 'Asas literasi masih lemah, kurang tumpuan, kurang latihan di rumah.', int_pendek_12: '<li>Latih tubi intensif menggunakan kad imbas huruf dan suku kata.</li><li>Aktiviti menulis huruf dan perkataan di papan putih individu.</li>', int_panjang_12: '<li>Program Bacaan Berstruktur mengikut tahap keupayaan murid.</li>', int_pendek_3: '<li>Sesi bimbingan membaca dalam kumpulan kecil.</li><li>Latihan pemahaman berdasarkan teks mudah dan bergambar.</li>', int_panjang_3: '<li>Pemantauan berkala oleh guru dan kerjasama dengan ibu bapa untuk galakan membaca di rumah.</li>' },
-            tahun2: { tp: [1, 9, 35, 25, 0, 0], isu_tp1_2: 'Literasi asas belum kukuh, perbendaharaan kata terhad, ketidakhadiran.', isu_tp3: 'Kosa kata kurang luas, asas literasi lemah dari tahun 1, kurang latihan.', int_pendek_12: '<li>Program "5 Minit Fonik" setiap hari.</li><li>Aktiviti membina ayat mudah menggunakan kad perkataan.</li>', int_panjang_12: '<li>Program mentor-mentee (murid TP5/6 bantu murid TP1/2).</li>', int_pendek_3: '<li>Permainan bahasa untuk meluaskan kosa kata (teka silang kata, sahibba).</li><li>Latihan membina ayat majmuk.</li>', int_panjang_3: '<li>Projek "Buku Skrap Saya" untuk mengumpul dan menggunakan perkataan baharu.</li>' },
-            tahun3: { tp: [1, 5, 21, 25, 0, 0], isu_tp1_2: 'Literasi asas belum kukuh, perbendaharaan kata sangat terhad, kehadiran tidak konsisten.', isu_tp3: 'Asas literasi belum mantap, kefahaman membaca terhad.', int_pendek_12: '<li>Kelas bimbingan membaca secara individu.</li><li>Penggunaan bahan bacaan bergred (mengikut tahap).</li>', int_panjang_12: '<li>Kerjasama dengan Unit Pemulihan Khas untuk intervensi khusus.</li>', int_pendek_3: '<li>Latihan intensif menjawab soalan pemahaman.</li><li>Aktiviti "Jom Bercerita" untuk meningkatkan keyakinan.</li>', int_panjang_3: '<li>Program galakan membaca dengan sistem ganjaran.</li>' },
-            tahun4: { tp: [0, 1, 0, 41, 16, 0], isu_tp1_2: 'Kefahaman bacaan lemah, kehadiran tidak konsisten.', isu_tp3: '', int_pendek_12: '<li>Sesi kaunseling untuk masalah kehadiran.</li><li>Latihan pemahaman bacaan berfokus.</li>', int_panjang_12: '<li>Program mentor-mentee.</li>', int_pendek_3: '', int_panjang_3: '' },
-            tahun5: { tp: [0, 3, 0, 35, 22, 0], isu_tp1_2: 'Kefahaman bacaan lemah, kehadiran tidak konsisten.', isu_tp3: '', int_pendek_12: '<li>Latihan pemahaman intensif.</li><li>Aktiviti pengayaan kosa kata.</li>', int_panjang_12: '<li>Program galakan membaca.</li>', int_pendek_3: '', int_panjang_3: '' },
-            tahun6: { tp: [0, 1, 0, 32, 20, 0], isu_tp1_2: 'Literasi awal masih tidak kukuh, kehadiran tidak konsisten.', isu_tp3: '', int_pendek_12: '<li>Latihan bacaan fonik dan mengenal huruf.</li><li>Latihan bergambar (menulis suku kata).</li>', int_panjang_12: '<li>Bacaan berpasangan dengan murid mahir.</li>', int_pendek_3: '', int_panjang_3: '' }
-        };
-        const dataSej = {
-            tahun4: { tp: [0, 1, 41, 16, 0, 0] },
-            tahun5: { tp: [0, 3, 5, 52, 0, 0] },
-            tahun6: { tp: [0, 0, 19, 28, 6, 0] }
-        };
-        const dataSains = {
-            tahun1: { tp: [4, 9, 32, 11, 0, 0], isu_tp1: 'Murid tidak memahami konsep asas seperti benda hidup/bukan hidup, kosa kata sains terhad, dan tidak fokus.', isu_tp2: 'Murid tidak dapat mengelaskan objek dengan tepat dan cepat lupa selepas belajar.', isu_tp3: 'Murid tidak dapat menerangkan pemerhatian dengan bahasa sendiri dan salah guna istilah sains.', int_pendek_1: '<li>Menggunakan objek sebenar untuk tunjuk beza benda hidup & bukan hidup.</li><li>Aktiviti sentuh, rasa, dan lihat.</li>', int_panjang_1: '<li>Latihan mingguan menggunakan kad imbas.</li><li>Lawatan ke sekeliling sekolah.</li>', int_pendek_2: '<li>Aktiviti mengasingkan objek mengikut ciri (warna, bentuk, saiz).</li><li>Latihan pengelasan berulang dalam kumpulan kecil.</li>', int_panjang_2: '<li>Projek mini mengumpul & mengelaskan daun/batu.</li>', int_pendek_3: '<li>Menggalakkan murid jawab guna ayat lengkap.</li><li>Menunjukkan demonstrasi mudah.</li>', int_panjang_3: '<li>Meminta murid menceritakan semula aktiviti kepada rakan.</li>' },
-            tahun2: { tp: [2, 9, 37, 18, 4, 0], isu_tp1: 'Kurang ingatan konsep asas Tahun 1, tidak memberi perhatian, sukar memahami arahan bertulis.', isu_tp2: 'Tidak dapat menghubungkan konsep dengan contoh harian, lupa langkah pemerhatian.', isu_tp3: 'Sukar menjelaskan sebab kepada jawapan, hanya menghafal tanpa faham.', int_pendek_1: '<li>Menggunakan arahan visual & lisan serentak.</li><li>Aktiviti hands-on berulang.</li>', int_panjang_1: '<li>Rutin ulang kaji konsep asas.</li><li>Sesi bimbingan tambahan berkala.</li>', int_pendek_2: '<li>Latihan langkah demi langkah.</li><li>Menggunakan kad imbas untuk kuatkan ingatan.</li>', int_panjang_2: '<li>Latihan pengelasan secara berkala.</li>', int_pendek_3: '<li>Latihan menjawab soalan “KENAPA?”.</li><li>Aktiviti perbincangan.</li>', int_panjang_3: '<li>Latihan soal jawab terbuka mingguan.</li>' },
-            tahun3: { tp: [1, 5, 17, 21, 8, 0], isu_tp1: 'Tidak memberi perhatian, sukar membaca arahan kompleks, lemah pemahaman kosa kata.', isu_tp2: 'Tidak dapat menghubungkan pengetahuan lama dengan baru, lupa maklumat.', isu_tp3: 'Sukar memberi penerangan logik, hanya menghafal tanpa faham maksud.', int_pendek_1: '<li>Ulang kaji konsep asas.</li><li>Memberikan arahan mudah & bergambar.</li>', int_panjang_1: '<li>Program pengukuhan asas secara konsisten.</li>', int_pendek_2: '<li>Aktiviti berulang dengan variasi.</li><li>Menggunakan kad imbas digital atau bercetak.</li>', int_panjang_2: '<li>Rutin ulang kaji mingguan.</li>', int_pendek_3: '<li>Latihan “Terangkan semula dengan kata sendiri”.</li><li>Aktiviti role-play situasi mudah.</li>', int_panjang_3: '<li>Latihan penjelasan secara lisan mingguan.</li>' },
-            tahun4: { tp: [0, 0, 2, 28, 22, 6], isu_tp3: 'Sukar memberi penerangan logik, hanya menghafal tanpa faham, kurang latihan soalan terbuka.', int_pendek_3: '<li>Latihan “Terangkan semula dengan kata sendiri”.</li><li>Menggunakan soalan berbentuk sebab & akibat.</li>', int_panjang_3: '<li>Latihan penjelasan secara lisan mingguan.</li><li>Menggalakkan murid menggunakan nota ringkas sendiri.</li>' },
-            tahun5: { tp: [0, 0, 0, 20, 31, 9], isu_tp4: 'Sukar mengaplikasi konsep pada situasi baru, tidak yakin, kurang latihan pengayaan.', int_pendek_4: '<li>Latihan menyelesaikan masalah mudah.</li><li>Aktiviti soal jawab berpasangan.</li>', int_panjang_4: '<li>Aktiviti penerangan secara berkumpulan.</li><li>Memberikan latihan KBAT secara berperingkat.</li>' },
-            tahun6: { tp: [0, 0, 0, 11, 27, 15], isu_tp4: 'Sukar mengaplikasi konsep pada situasi baru, tidak yakin, kurang latihan pengayaan.', int_pendek_4: '<li>Latihan menyelesaikan masalah mudah.</li><li>Aktiviti soal jawab berpasangan.</li>', int_panjang_4: '<li>Aktiviti penerangan secara berkumpulan.</li><li>Memberikan latihan KBAT secara berperingkat.</li>' }
-        };
-        const dataBi = {
-            tahun1: { tp: [0, 13, 36, 7, 0, 0], isu_tp1_2: 'Kemahiran Asas Bahasa Lemah: Murid belum menguasai asas membaca, menulis dan menyebut perkataan mudah. Masih teragak-agak mengenal huruf dan bunyi (phonics).', isu_tp3: 'Kekeliruan antara bahasa ibunda dengan Bahasa Inggeris.', int_pendek_12: '<li>Perkukuh Fonik & Perbendaharaan Kata: Latihan fonik harian (5–10 minit) fokus pada bunyi huruf & gabungan.</li><li>Aktiviti Interaktif & Menyeronokkan: Gunakan lagu, nyanyian berulang, sajak untuk sebutan.</li>', int_panjang_12: '<li>Penguasaan Literasi Asas: Program bacaan berstruktur (phonics → blending → reading simple sentences).</li><li>Amalan “Reading Corner” di kelas untuk bacaan kendiri.</li>', int_pendek_3: '<li>Latihan padanan perkataan-gambar.</li>', int_panjang_3: '<li>Penilaian kendiri dan refleksi – murid menilai hasil kerja mereka.</li>' },
-            tahun2: { tp: [0, 11, 40, 19, 0, 0], isu_tp1_2: 'Kurang Pendedahan di Rumah: Murid lebih banyak menggunakan bahasa ibunda. Tiada bahan bacaan atau persekitaran berbahasa Inggeris.', isu_tp3: 'Murid kurang keyakinan untuk bertutur dalam Bahasa Inggeris.', int_pendek_12: '<li>Gunakan bahan sebenar (realia) untuk ajar perkataan.</li><li>Tayang gambar atau video pendek supaya murid faham maksud.</li>', int_panjang_12: '<li>Pengayaan Perbendaharaan Kata: Pembangunan word bank peribadi.</li><li>Aktiviti mingguan “Show and Tell”.</li>', int_pendek_3: '<li>Gunakan stiker, bintang, carta senyum untuk galakkan murid bercakap/menjawab.</li>', int_panjang_3: '<li>Ulangkaji perkataan melalui projek kelas (contoh: poster, kolaj).</li>' },
-            tahun3: { tp: [0, 7, 26, 19, 0, 0], isu_tp1_2: 'Kurang Pendedahan di Rumah: Murid lebih banyak menggunakan bahasa ibunda.', isu_tp3: 'Murid kurang yakin untuk memadankan perkataan atau ayat dengan gambar.', int_pendek_12: '<li>Membaca dan Mengulang Ayat Pendek dengan Bimbingan.</li><li>Menyalin Perkataan dan Ayat Pendek dari Papan Tulis.</li>', int_panjang_12: '<li>Program "buddy system" untuk latihan membaca berpasangan.</li>', int_pendek_3: '<li>Padankan Perkataan atau Ayat Pendek dengan Gambar (kad imbas / lembaran kerja).</li>', int_panjang_3: '<li>Projek kelas menghasilkan buku cerita bergambar ringkas.</li>' },
-            tahun4: { tp: [0, 11, 22, 25, 0, 0], isu_tp1_2: 'Kurang Pendedahan di Rumah: Murid lebih banyak menggunakan bahasa ibunda.', isu_tp3: 'Murid kurang berinteraksi menggunakan Bahasa Inggeris.', int_pendek_12: '<li>Remedial Instruction (RI) lesson plan, fokus terhadap kumpulan kecil.</li>', int_panjang_12: '<li>Sokongan Rumah & Komuniti: Bengkel ringkas untuk ibu bapa tentang cara menyokong anak belajar BI di rumah.</li>', int_pendek_3: '<li>Aktiviti "role-play" dalam kumpulan.</li>', int_panjang_3: '<li>Galakan menonton rancangan BI dan membaca buku cerita bersama di rumah.</li>' },
-            tahun5: { tp: [0, 0, 32, 28, 0, 0], isu_tp3: 'Murid kurang bermotivasi dan kurang yakin untuk menulis karangan.', int_pendek_3: '<li>Latihan menyalin contoh karangan mudah.</li><li>Aktiviti membina ayat berdasarkan gambar.</li>', int_panjang_3: '<li>Program penulisan jurnal mingguan.</li>' },
-            tahun6: { tp: [0, 1, 34, 18, 0, 0], isu_tp1_2: 'Asas Bahasa yang Lemah Sejak Tahap 1: Kelemahan fonik sejak Tahun 1 menyebabkan murid masih sukar membaca teks ringkas. Kehadiran ke sekolah yang kurang memuaskan.', isu_tp3: 'Kosa kata terhad untuk membina ayat yang kompleks.', int_pendek_12: '<li>Fokus Asas Membaca & Perbendaharaan Kata: Aktiviti padanan perkataan dengan gambar.</li><li>Word of the Day – murid diperkenalkan 1–2 perkataan baharu setiap hari.</li>', int_panjang_12: '<li>Sokongan Rumah & Komuniti: Bengkel ringkas untuk ibu bapa.</li>', int_pendek_3: '<li>Latihan Membina Ayat Mudah.</li>', int_panjang_3: '<li>Galakan membaca buku cerita BI.</li>' }
-        };
+      <div class="card">
+        <div class="flex items-center justify-between mb-4">
+          <div>
+            <h2 class="text-lg font-semibold">Perbandingan Pertengahan vs Akhir — Per Kelas (Option B)</h2>
+            <div class="muted text-sm">Setiap carta menunjukkan Pertengahan (biru) vs Akhir (menta). Data Bell digunakan.</div>
+          </div>
+          <div class="flex items-center gap-2">
+            <button id="pbd-use-sample" class="px-3 py-1 rounded border text-sm">Tunjuk Data</button>
+            <button id="load-pbd-akhir" class="px-3 py-1 rounded bg-green-600 text-white text-sm">Ganti Data (JSON)</button>
+          </div>
+        </div>
 
-        // --- DYNAMIC CONTENT GENERATION ---
-        function createYearlyAnalysis(subject, dataObject, tabsContainer, contentContainer, chartTitlePrefix, titleColor) {
-            tabsContainer.innerHTML = '';
-            contentContainer.innerHTML = '';
-            Object.keys(dataObject).forEach((key, index) => {
-                const year = key.replace('tahun', '');
-                const data = dataObject[key];
-                const isActive = index === 0;
+        <div class="mb-4 grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="muted text-sm">Petunjuk: Carta dua bar — Pertengahan dan Akhir untuk setiap TP.</div>
+          <div></div>
+          <div class="text-right muted text-sm">Format JSON (optional): { "tahun4": { "4 Cerdas":[..],"4 Cerdik":[..] }, ... }</div>
+        </div>
 
-                const tabButton = document.createElement('button');
-                tabButton.className = `tab-button year-tab-button py-3 px-5 text-sm font-medium text-center text-gray-500 ${isActive ? 'active' : ''}`;
-                tabButton.textContent = `Tahun ${year}`;
-                tabButton.dataset.parent = `content-${subject}`;
-                tabButton.dataset.target = `${subject}-tahun${year}`;
-                tabsContainer.appendChild(tabButton);
+        <div class="border-b mb-4">
+          <nav id="sej-year-tabs" class="flex gap-2 -mb-px"></nav>
+        </div>
 
-                let isuContent = '';
-                const createIsuCard = (tpLevel, count, issueText, intPendek, intPanjang, color) => {
-                    if (count > 0) {
-                        return `<div class="bg-${color}-50 border-l-4 border-${color}-500 p-4 rounded-r-lg">
-                                    <h4 class="font-bold text-${color}-800">Isu: ${tpLevel} (${count} Murid)</h4>
-                                    <p class="text-sm mt-1">${issueText}</p>
-                                    <div class="mt-3 pt-3 border-t text-sm text-gray-700 space-y-2">
-                                        <div><p class="font-semibold">Jangka Pendek:</p><ul class="list-disc list-inside pl-4">${intPendek}</ul></div>
-                                        <div><p class="font-semibold">Jangka Panjang:</p><ul class="list-disc list-inside pl-4">${intPanjang}</ul></div>
-                                    </div>
-                                </div>`;
-                    }
-                    return '';
-                };
-                
-                const tp1_2_count = data.tp[0] + data.tp[1];
-                isuContent += createIsuCard('TP1 & TP2', tp1_2_count, data.isu_tp1_2 || data.isu_tp1 || '', data.int_pendek_12 || data.int_pendek_1 || '', data.int_panjang_12 || data.int_panjang_1 || '', 'orange');
-                isuContent += createIsuCard('TP3', data.tp[2], data.isu_tp3 || '', data.int_pendek_3 || '', data.int_panjang_3 || '', 'yellow');
-                isuContent += createIsuCard('TP4', data.tp[3], data.isu_tp4 || '', data.int_pendek_4 || '', data.int_panjang_4 || '', 'lime');
+        <div id="sej-year-content"></div>
+      </div>
+    </section>
 
-                const contentDiv = document.createElement('div');
-                contentDiv.id = `${subject}-tahun${year}`;
-                contentDiv.className = `year-tab-content ${isActive ? 'active' : ''}`;
-                contentDiv.innerHTML = `
-                    <div class="space-y-6">
-                        <div>
-                            <h3 class="text-lg font-semibold mb-2 text-center ${titleColor}">${chartTitlePrefix} Tahun ${year}</h3>
-                            <div class="chart-container"><canvas id="chart${subject.charAt(0).toUpperCase() + subject.slice(1)}Tahun${year}"></canvas></div>
-                        </div>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">${isuContent}</div>
-                    </div>`;
-                contentContainer.appendChild(contentDiv);
-            });
-        }
-        
-        // Generate content for BM
-        createYearlyAnalysis('bm', dataBm, document.getElementById('bm-year-tabs'), document.getElementById('bm-year-content'), 'Taburan TP BM', 'text-blue-800');
-        
-        // Generate content for Sejarah
-        const sejYearContentContainer = document.getElementById('sej-year-content');
-        sejYearContentContainer.innerHTML = `
-            <div id="sej-tahun4" class="year-tab-content active"><div class="space-y-6"><div><h3 class="text-lg font-semibold mb-2 text-center text-sky-800">Taburan TP Sejarah Tahun 4</h3><div class="chart-container"><canvas id="chartSejTahun4"></canvas></div></div><div class="grid grid-cols-1 md:grid-cols-2 gap-6"><div class="bg-orange-50 border-l-4 border-orange-500 p-4 rounded-r-lg"><h4 class="font-bold text-orange-800">Isu: TP1 & TP2 (1 Murid)</h4><p class="text-sm mt-1">Kehadiran tidak konsisten, tidak melengkapkan tugasan, dan kurang mahir kemahiran asas Sejarah.</p><div class="mt-3 pt-3 border-t text-sm text-gray-700 space-y-2"><div><p class="font-semibold">Jangka Pendek:</p><ul class="list-disc list-inside pl-4"><li>Sesi perbincangan bersama murid dan ibu bapa untuk memahami punca ketidakhadiran.</li><li>Bimbingan individu dan tugasan ringkas secara berperingkat.</li></ul></div><div><p class="font-semibold">Jangka Panjang:</p><ul class="list-disc list-inside pl-4"><li>Melibatkan murid dalam pembelajaran berasaskan projek untuk meningkatkan minat.</li></ul></div></div></div><div class="bg-yellow-50 border-l-4 border-yellow-500 p-4 rounded-r-lg"><h4 class="font-bold text-yellow-800">Isu: TP3 (41 Murid)</h4><p class="text-sm mt-1">Penguasaan sederhana, faham sebahagian kandungan tetapi sukar dalam aspek tertentu. Perlu sokongan ke TP4.</p><div class="mt-3 pt-3 border-t text-sm text-gray-700 space-y-2"><div><p class="font-semibold">Jangka Pendek:</p><ul class="list-disc list-inside pl-4"><li>Sesi pengajaran berfokus pada topik lemah.</li><li>Latihan bertema berterusan menggunakan peta minda atau permainan interaktif.</li></ul></div><div><p class="font-semibold">Jangka Panjang:</p><ul class="list-disc list-inside pl-4"><li>Program mentor-mentee di mana murid cemerlang membantu rakan.</li><li>Melibatkan ibu bapa dalam pemantauan pembelajaran di rumah.</li></ul></div></div></div></div></div></div>
-            <div id="sej-tahun5" class="year-tab-content"><div class="space-y-6"><div><h3 class="text-lg font-semibold mb-2 text-center text-amber-800">Taburan TP Sejarah Tahun 5</h3><div class="chart-container"><canvas id="chartSejTahun5"></canvas></div></div><div class="grid grid-cols-1 md:grid-cols-2 gap-6"><div class="bg-orange-50 border-l-4 border-orange-500 p-4 rounded-r-lg"><h4 class="font-bold text-orange-800">Isu: TP1 & TP2 (3 Murid)</h4><p class="text-sm mt-1">Kehadiran tidak konsisten, tidak melengkapkan tugasan, dan kurang mahir kemahiran asas Sejarah.</p><div class="mt-3 pt-3 border-t text-sm text-gray-700 space-y-2"><div><p class="font-semibold">Jangka Pendek:</p><ul class="list-disc list-inside pl-4"><li>Bimbingan individu atau dalam kumpulan kecil.</li><li>Menyediakan bahan tambahan seperti video pembelajaran atau buku latihan mudah.</li></ul></div><div><p class="font-semibold">Jangka Panjang:</p><ul class="list-disc list-inside pl-4"><li>Mewujudkan sistem pemantauan tugasan bersama ibu bapa melalui aplikasi komunikasi.</li></ul></div></div></div><div class="bg-yellow-50 border-l-4 border-yellow-500 p-4 rounded-r-lg"><h4 class="font-bold text-yellow-800">Isu: TP3 (5 Murid)</h4><p class="text-sm mt-1">Menguasai sebahagian kandungan tetapi lemah dalam aplikasi pengetahuan.</p><div class="mt-3 pt-3 border-t text-sm text-gray-700 space-y-2"><div><p class="font-semibold">Jangka Pendek:</p><ul class="list-disc list-inside pl-4"><li>Mengadakan Klinik Sejarah mingguan untuk topik sukar.</li><li>Menggunakan kuiz interaktif (cth: Kahoot, Quizziz) untuk meningkatkan penglibatan.</li></ul></div><div><p class="font-semibold">Jangka Panjang:</p><ul class="list-disc list-inside pl-4"><li>Melaksanakan program mentor rakan sebaya.</li></ul></div></div></div></div></div></div>
-            <div id="sej-tahun6" class="year-tab-content"><div class="space-y-6"><div><h3 class="text-lg font-semibold mb-2 text-center text-rose-800">Taburan TP Sejarah Tahun 6</h3><div class="chart-container"><canvas id="chartSejTahun6"></canvas></div></div><div class="grid grid-cols-1"><div class="bg-yellow-50 border-l-4 border-yellow-500 p-4 rounded-r-lg"><h4 class="font-bold text-yellow-800">Isu: TP3 (19 Murid)</h4><p class="text-sm mt-1">Menguasai sebahagian kandungan tetapi lemah dalam aplikasi pengetahuan.</p><div class="mt-3 pt-3 border-t text-sm text-gray-700 space-y-2"><div><p class="font-semibold">Jangka Pendek:</p><ul class="list-disc list-inside pl-4"><li>Fokus PdP pada topik yang lemah melalui sesi kumpulan kecil atau klinik Sejarah.</li><li>Latihan bertema menggunakan peta minda, kuiz, atau aktiviti lakonan peristiwa sejarah.</li></ul></div><div><p class="font-semibold">Jangka Panjang:</p><ul class="list-disc list-inside pl-4"><li>Melibatkan ibu bapa dalam pemantauan pembelajaran di rumah dengan menyediakan bahan rujukan.</li></ul></div></div></div></div></div></div>
-        `;
+    <!-- UASA -->
+    <section id="section-uasa" class="section-hidden">
+      <div class="card mb-4">
+        <h3 class="font-semibold mb-2">UASA — Input & Analisis</h3>
+        <div class="muted text-sm mb-2">Tampal JSON atau gunakan data di kotak (sudah diisi).</div>
+        <textarea id="uasa-input" class="w-full border rounded p-3" rows="6">{
+  "tahun4": {
+    "4 Cerdas": { "TD": 1, "A": 0, "B": 0, "C": 19, "D": 9 },
+    "4 Cerdik": { "TD": 1, "A": 1, "B": 12, "C": 11, "D": 4 }
+  },
+  "tahun5": {
+    "5 Cerdas": { "TD": 0, "A": 5, "B": 13, "C": 12, "D": 0 },
+    "5 Cerdik": { "TD": 2, "A": 0, "B": 9, "C": 12, "D": 7 }
+  },
+  "tahun6": {
+    "6 Cerdas": { "TD": 0, "A": 3, "B": 16, "C": 8, "D": 0 },
+    "6 Cerdik": { "TD": 0, "A": 0, "B": 7, "C": 13, "D": 6 }
+  }
+}</textarea>
 
-        // Generate content for Sains
-        createYearlyAnalysis('sains', dataSains, document.getElementById('sains-year-tabs'), document.getElementById('sains-year-content'), 'Taburan TP Sains', 'text-purple-800');
+        <div class="flex gap-2 mt-3">
+          <button id="uasa-load" class="px-3 py-1 rounded bg-sky-600 text-white text-sm">Muatkan & Papar</button>
+          <button id="uasa-clear" class="px-3 py-1 rounded border text-sm">Kosongkan</button>
+        </div>
+      </div>
 
-        // Generate content for BI
-        createYearlyAnalysis('bi', dataBi, document.getElementById('bi-year-tabs'), document.getElementById('bi-year-content'), 'Taburan TP BI', 'text-green-800');
+      <div id="uasa-results" class="section-hidden">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="card">
+            <h4 class="font-semibold mb-2">Ringkasan Per Tahun</h4>
+            <div id="summary-list" class="text-sm"></div>
+          </div>
+          <div class="card">
+            <h4 class="font-semibold mb-2">Carta Perbandingan</h4>
+            <div class="flex gap-2 mb-3">
+              <select id="chart-year-select" class="border rounded px-3 py-1 text-sm">
+                <option value="tahun4">Tahun 4</option>
+                <option value="tahun5">Tahun 5</option>
+                <option value="tahun6">Tahun 6</option>
+              </select>
+              <select id="chart-mode" class="border rounded px-3 py-1 text-sm">
+                <option value="by-class">By Class (stacked)</option>
+                <option value="aggregate">Aggregate (per tahun)</option>
+              </select>
+            </div>
+            <div class="chart-container"><canvas id="uasaChart"></canvas></div>
+          </div>
+        </div>
 
-        // --- TAB FUNCTIONALITY ---
-        function setupTabSwitching(buttonSelector, contentSelector) {
-            const tabs = document.querySelectorAll(buttonSelector);
-            tabs.forEach(tab => {
-                tab.addEventListener('click', () => {
-                    const parentId = tab.dataset.parent;
-                    const targetId = tab.dataset.target;
-                    document.querySelectorAll(`${buttonSelector}[data-parent="${parentId}"]`).forEach(t => t.classList.remove('active'));
-                    document.querySelectorAll(`#${parentId} .year-tab-content`).forEach(c => c.classList.remove('active'));
-                    tab.classList.add('active');
-                    document.getElementById(targetId).classList.add('active');
-                });
-            });
-        }
+        <div class="card mt-4">
+          <h4 class="font-semibold mb-2">Butiran Kelas (Gred & Peratus)</h4>
+          <div id="class-details" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+        </div>
+      </div>
+    </section>
 
-        const subjectTabs = document.querySelectorAll('.subject-tab-button');
-        const subjectContents = document.querySelectorAll('.subject-tab-content');
-        subjectTabs.forEach(tab => {
-            tab.addEventListener('click', () => {
-                // Animate count-up only when switching to Sejarah tab
-                if(tab.dataset.target === 'content-sej') {
-                    document.querySelectorAll('#content-sej .count-up').forEach(el => {
-                        animateCountUp(el);
-                    });
-                }
-                subjectTabs.forEach(t => t.classList.remove('active'));
-                subjectContents.forEach(c => c.classList.remove('active'));
-                tab.classList.add('active');
-                document.getElementById(tab.dataset.target).classList.add('active');
-            });
+  </main>
+
+  <footer class="text-center text-sm text-gray-500 py-6">© 2025 SK Satu Sultan Alam Shah — Dashboard untuk kegunaan dalaman</footer>
+
+  <script>
+  // DOM ready
+  document.addEventListener('DOMContentLoaded', () => {
+    // Safe init lucide icons (try DOMContentLoaded, fallback to load)
+    function initLucide(){
+      if(window.lucide && typeof lucide.createIcons === 'function'){
+        try{ lucide.createIcons(); }catch(e){ console.warn('lucide err', e); }
+      } else {
+        window.addEventListener('load', ()=>{ if(window.lucide && typeof lucide.createIcons === 'function') try{ lucide.createIcons(); }catch(e){ console.warn('lucide onload err', e); } });
+      }
+    }
+    initLucide();
+
+    // util
+    function safeParseJSON(s){ try{return JSON.parse(s);}catch(e){return null;} }
+
+    // nav
+    const navPbd = document.getElementById('nav-pbd'), navUasa = document.getElementById('nav-uasa');
+    navPbd.addEventListener('click', ()=>{ document.getElementById('section-pbd').classList.remove('section-hidden'); document.getElementById('section-uasa').classList.add('section-hidden'); navPbd.classList.add('bg-sky-600','text-white'); navUasa.classList.remove('bg-sky-600','text-white'); });
+    navUasa.addEventListener('click', ()=>{ document.getElementById('section-uasa').classList.remove('section-hidden'); document.getElementById('section-pbd').classList.add('section-hidden'); navUasa.classList.add('bg-sky-600','text-white'); navPbd.classList.remove('bg-sky-600','text-white'); });
+
+    document.getElementById('download-all').addEventListener('click', ()=>{
+      const blob = new Blob([document.documentElement.outerHTML], { type: 'text/html' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href = url; a.download = 'dashboard-pbd-uasa-index.html'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+    });
+
+    // --- PBD data (Bell) ---
+    const dataSejPertengahan = {
+      tahun4: { '4 Cerdas':[0,0,22,7,0,0], '4 Cerdik':[1,19,7,2,0,0] },
+      tahun5: { '5 Cerdas':[0,0,0,21,9,0], '5 Cerdik':[0,3,5,19,3,0] },
+      tahun6: { '6 Cerdas':[0,0,0,7,19,1], '6 Cerdik':[0,0,19,5,2,0] }
+    };
+    const dataSejAkhir = {
+      tahun4: { '4 Cerdas':[0,0,0,11,10,8], '4 Cerdik':[0,1,19,9,0,0] },
+      tahun5: { '5 Cerdas':[0,0,0,1,16,13], '5 Cerdik':[0,0,4,10,16,0] },
+      tahun6: { '6 Cerdas':[0,0,0,0,16,11], '6 Cerdik':[0,0,0,18,8,0] }
+    };
+    const chartLabels = ['TP1','TP2','TP3','TP4','TP5','TP6'];
+    const palette = { pert:'#2563eb', akhir:'#10b981' };
+
+    function createChart(canvasId, datasets){
+      const ctx = document.getElementById(canvasId); if(!ctx) return null;
+      return new Chart(ctx.getContext('2d'), { type:'bar', data:{ labels: chartLabels, datasets }, options:{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{position:'top'} }, scales:{ y:{ beginAtZero:true, title:{ display:true, text:'Bilangan Murid' } }, x:{ title:{ display:true, text:'Tahap Penguasaan (TP)' } } } } });
+    }
+
+    function renderSejTabs(){
+      const tabs = document.getElementById('sej-year-tabs'), content = document.getElementById('sej-year-content');
+      tabs.innerHTML=''; content.innerHTML='';
+      Object.keys(dataSejPertengahan).forEach((yk, idx) => {
+        const year = yk.replace('tahun',''), isActive = idx===0;
+        const btn = document.createElement('button'); btn.className='tab-button py-2 px-4 text-sm '+(isActive?'active':''); btn.textContent='Tahun '+year; tabs.appendChild(btn);
+
+        const section = document.createElement('div'); section.id = 'sej-tahun'+year; if(!isActive) section.classList.add('section-hidden');
+        const grid = document.createElement('div'); grid.className='grid grid-cols-1 md:grid-cols-2 gap-4';
+
+        Object.keys(dataSejPertengahan[yk]).forEach(cls => {
+          const card = document.createElement('div'); card.className='card';
+          const h = document.createElement('h4'); h.className='font-semibold'; h.textContent = cls + ' — Pertengahan vs Akhir';
+          const wrap = document.createElement('div'); wrap.className='chart-container mt-3';
+          const canvas = document.createElement('canvas'); const safe = 'chart'+year+cls.replace(/\s+/g,''); canvas.id = safe; wrap.appendChild(canvas);
+          const change = document.createElement('div'); change.className='muted text-sm mt-2'; change.id = 'change'+safe;
+
+          card.appendChild(h); card.appendChild(wrap); card.appendChild(change);
+          grid.appendChild(card);
+
+          const pert = dataSejPertengahan[yk][cls] || [0,0,0,0,0,0];
+          const akhir = (dataSejAkhir[yk] && dataSejAkhir[yk][cls]) ? dataSejAkhir[yk][cls] : [0,0,0,0,0,0];
+
+          // render chart shortly after insertion
+          setTimeout(()=>{ createChart(safe, [ { label:'Pertengahan', data:pert, backgroundColor:palette.pert }, { label:'Akhir', data:akhir, backgroundColor:palette.akhir } ]); 
+            let html = '<ul class=\"list-disc list-inside\">';
+            for(let i=0;i<6;i++){ const d=(akhir[i]||0)-(pert[i]||0); html += '<li>TP'+(i+1)+': '+(pert[i]||0)+' → '+(akhir[i]||0)+' (Δ '+(d>0?'+':'')+d+')</li>'; }
+            html += '</ul>'; document.getElementById('change'+safe).innerHTML = html;
+          }, 20);
         });
 
-        setupTabSwitching('.year-tab-button', '.year-tab-content');
+        section.appendChild(grid); content.appendChild(section);
 
-        // Count-up animation function
-        function animateCountUp(el) {
-            const finalValue = parseInt(el.dataset.value, 10);
-            let currentValue = 0;
-            const duration = 1500;
-            const increment = finalValue / (duration / 16);
-            function updateCount() {
-                currentValue += increment;
-                if (currentValue < finalValue) {
-                    el.textContent = Math.ceil(currentValue);
-                    requestAnimationFrame(updateCount);
-                } else {
-                    el.textContent = finalValue;
-                }
-            }
-            requestAnimationFrame(updateCount);
-        }
+        btn.addEventListener('click', ()=>{
+          document.querySelectorAll('#sej-year-content > div').forEach(el=>el.classList.add('section-hidden'));
+          section.classList.remove('section-hidden');
+          document.querySelectorAll('#sej-year-tabs .tab-button').forEach(b=>b.classList.remove('active'));
+          btn.classList.add('active');
+        });
+      });
+    }
+    renderSejTabs();
 
-        // --- CHART RENDERING ---
-        const commonChartOptions = { responsive: true, maintainAspectRatio: false, animation: { duration: 1000, easing: 'easeInOutQuart' }, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, title: { display: true, text: 'Bilangan Murid' } } } };
-        const chartLabels = ['TP1', 'TP2', 'TP3', 'TP4', 'TP5', 'TP6'];
-        const chartColors = ['#ef4444', '#f97316', '#f59e0b', '#84cc16', '#22c55e', '#10b981'];
-
-        Object.keys(dataBm).forEach(key => { new Chart(document.getElementById(`chartBmTahun${key.replace('tahun','')}`).getContext('2d'), { type: 'bar', data: { labels: chartLabels, datasets: [{ data: dataBm[key].tp, backgroundColor: chartColors, borderRadius: 4 }] }, options: commonChartOptions }); });
-        Object.keys(dataSej).forEach(key => { new Chart(document.getElementById(`chartSejTahun${key.replace('tahun','')}`).getContext('2d'), { type: 'bar', data: { labels: chartLabels, datasets: [{ data: dataSej[key].tp, backgroundColor: chartColors, borderRadius: 4 }] }, options: commonChartOptions }); });
-        Object.keys(dataSains).forEach(key => { new Chart(document.getElementById(`chartSainsTahun${key.replace('tahun','')}`).getContext('2d'), { type: 'bar', data: { labels: chartLabels, datasets: [{ data: dataSains[key].tp, backgroundColor: chartColors, borderRadius: 4 }] }, options: commonChartOptions }); });
-        Object.keys(dataBi).forEach(key => { new Chart(document.getElementById(`chartBiTahun${key.replace('tahun','')}`).getContext('2d'), { type: 'bar', data: { labels: chartLabels, datasets: [{ data: dataBi[key].tp, backgroundColor: chartColors, borderRadius: 4 }] }, options: commonChartOptions }); });
-
-        lucide.createIcons();
+    // optional: allow replacement via JSON pasted into a (hidden) textarea or existing input area
+    document.getElementById('load-pbd-akhir').addEventListener('click', ()=>{
+      const raw = document.getElementById('pbd-akhir-input')?.value || '';
+      if(!raw) return alert('Sila tampal JSON ke dalam kotak input PBD sebelum klik.');
+      const parsed = safeParseJSON(raw);
+      if(!parsed) return alert('JSON tidak sah.');
+      Object.keys(parsed).forEach(k=>{ if(typeof parsed[k] === 'object') dataSejAkhir[k] = parsed[k]; });
+      renderSejTabs(); alert('Data Sesi Akhir digantikan (jika format betul).');
     });
-    </script>
+
+    document.getElementById('pbd-use-sample').addEventListener('click', ()=>{ renderSejTabs(); alert('Data sedia digunakan.'); });
+
+    // --- UASA ---
+    let uasaData = null, uasaChart = null;
+    function renderUasaSummary(){ const el=document.getElementById('summary-list'); el.innerHTML=''; Object.keys(uasaData||{}).forEach(k=>{ const classes = Object.keys(uasaData[k]); let totals={A:0,B:0,C:0,D:0,TD:0}; classes.forEach(c=>{ const g=uasaData[k][c]; totals.A += g.A||0; totals.B += g.B||0; totals.C += g.C||0; totals.D += g.D||0; totals.TD += g.TD||0; }); const s = totals.A+totals.B+totals.C+totals.D+totals.TD||1; el.innerHTML += '<div class=\"mb-2\"><strong>'+k.replace('tahun','Tahun ')+'</strong>: '+s+' murid — A: '+totals.A+' ('+((totals.A/s)*100).toFixed(1)+'%), B: '+totals.B+' ('+((totals.B/s)*100).toFixed(1)+'%), C: '+totals.C+' ('+((totals.C/s)*100).toFixed(1)+'%), D: '+totals.D+' ('+((totals.D/s)*100).toFixed(1)+'%)</div>'; }); }
+    function renderUasaClassDetails(){ const c=document.getElementById('class-details'); c.innerHTML=''; Object.keys(uasaData||{}).forEach(k=>{ Object.keys(uasaData[k]).forEach(cls=>{ const g=uasaData[k][cls]; const total=(g.A||0)+(g.B||0)+(g.C||0)+(g.D||0)+(g.TD||0)||1; const div=document.createElement('div'); div.className='card'; div.innerHTML = '<div class=\"flex justify-between items-center mb-2\"><div class=\"font-semibold\">'+cls+' ('+k.replace('tahun','Tahun ')+')</div><div class=\"muted\">Jumlah: '+total+'</div></div><div class=\"grid grid-cols-5 gap-2 text-center\"><div><div class=\"pill\" style=\"background:#e6fffa;color:#065f46\">A</div><div class=\"text-sm mt-1\">'+(g.A||0)+'</div><div class=\"muted text-xs\">'+(((g.A||0)/total)*100).toFixed(1)+'%</div></div><div><div class=\"pill\" style=\"background:#fff7ed;color:#92400e\">B</div><div class=\"text-sm mt-1\">'+(g.B||0)+'</div><div class=\"muted text-xs\">'+(((g.B||0)/total)*100).toFixed(1)+'%</div></div><div><div class=\"pill\" style=\"background:#fff1f2;color:#9f1239\">C</div><div class=\"text-sm mt-1\">'+(g.C||0)+'</div><div class=\"muted text-xs\">'+(((g.C||0)/total)*100).toFixed(1)+'%</div></div><div><div class=\"pill\" style=\"background:#eff6ff;color:#1e3a8a\">D</div><div class=\"text-sm mt-1\">'+(g.D||0)+'</div><div class=\"muted text-xs\">'+(((g.D||0)/total)*100).toFixed(1)+'%</div></div><div><div class=\"pill\" style=\"background:#f3f4f6;color:#374151\">TD</div><div class=\"text-sm mt-1\">'+(g.TD||0)+'</div><div class=\"muted text-xs\">'+(((g.TD||0)/total)*100).toFixed(1)+'%</div></div></div>'; c.appendChild(div); }); }); }
+
+    function renderUasaChart(){ const ctx=document.getElementById('uasaChart'); if(!ctx) return; if(uasaChart) uasaChart.destroy(); const year=document.getElementById('chart-year-select').value; const mode=document.getElementById('chart-mode').value; if(mode==='aggregate'){ let A=0,B=0,C=0,D=0,TD=0; Object.keys(uasaData[year]||{}).forEach(c=>{ const g=uasaData[year][c]; A+=g.A||0; B+=g.B||0; C+=g.C||0; D+=g.D||0; TD+=g.TD||0; }); uasaChart=new Chart(ctx.getContext('2d'),{ type:'bar', data:{ labels:['A','B','C','D','TD'], datasets:[{ data:[A,B,C,D,TD], backgroundColor:['#10b981','#f97316','#ef4444','#60a5fa','#94a3b8'] }] }, options:{ responsive:true, maintainAspectRatio:false } }); } else { const classes=Object.keys(uasaData[year]||{}); const series=['A','B','C','D','TD'].map(s=>({ label:s, data: classes.map(c=> (uasaData[year][c]&&uasaData[year][c][s])||0), backgroundColor: s==='A'? '#10b981': s==='B'? '#f97316': s==='C'? '#ef4444': s==='D'? '#60a5fa':'#94a3b8' })); uasaChart=new Chart(ctx.getContext('2d'),{ type:'bar', data:{ labels:classes, datasets:series }, options:{ responsive:true, maintainAspectRatio:false, scales:{ x:{ stacked:true }, y:{ stacked:true } } } }); } }
+
+    document.getElementById('uasa-load').addEventListener('click', ()=>{ const raw=document.getElementById('uasa-input').value; const parsed=safeParseJSON(raw); if(!parsed) return alert('JSON UASA tidak sah'); uasaData=parsed; document.getElementById('uasa-results').classList.remove('section-hidden'); renderUasaSummary(); renderUasaClassDetails(); renderUasaChart(); });
+    document.getElementById('uasa-clear').addEventListener('click', ()=>{ document.getElementById('uasa-input').value=''; document.getElementById('uasa-results').classList.add('section-hidden'); uasaData=null; });
+    document.getElementById('chart-year-select').addEventListener('change', renderUasaChart);
+    document.getElementById('chart-mode').addEventListener('change', renderUasaChart);
+
+    // make PBD visible by default
+    navPbd.click();
+  });
+  </script>
 </body>
 </html>
