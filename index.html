@@ -155,6 +155,7 @@
     <!-- Skrip JavaScript diletakkan di akhir body -->
     <script>
         // --- DATA ASAL (SEMUA TAHUN & KELAS) ---
+        // *** (DIBETULKAN) Struktur dataTahun yang lengkap ***
         const dataTahun = {
             "tahun4": {
                 "namaTahun": "Tahun 4",
@@ -191,49 +192,80 @@
             }
         };
 
-        // --- (BARU) DATA INTERVENSI UMUM (BUKAN TOPIK) & BERBEZA IKUT TAHUN ---
+        // --- (DIROMBAK) DATA INTERVENSI UMUM (JANGKA PENDEK/PANJANG) & BERBEZA IKUT TAHUN ---
         const intervensiData = {
             "tahun4": { // Fokus: Pengenalan & Fakta Asas
-                "fokus": [ // TP1 & TP2 (Tahu)
-                    "Fokus: 'Kenal Fakta Asas'",
-                    "Latih tubi 5 minit awal kelas guna kad imbas digital (cth: Quizlet, Wordwall).",
-                    "Tonton video Sejarah animasi (YouTube) & minta murid senaraikan 3 perkara yang mereka nampak/dengar.",
-                    "Sesi bimbingan kumpulan kecil (3-5 murid) untuk mengeja dan mengingati istilah/nama penting."
-                ],
-                "utama": [ // TP3 (Tahu & Faham)
-                    "Fokus: 'Mula Memahami Konteks'",
-                    "Bina Peta Minda ringkas (1-2 tahap) guna aplikasi digital (cth: Coggle, MindMeister) untuk susun peristiwa.",
-                    "Kuiz interaktif berkumpulan (Kahoot!, Quizziz) dengan soalan pemahaman aras rendah.",
-                    "Aktiviti 'Susun Semula': Murid menyusun ayat/gambar peristiwa penting yang telah disediakan guru."
-                ]
+                "fokus": { // TP1 & TP2 (Tahu)
+                    "pendek": [
+                        "Latih tubi 5 minit awal kelas guna kad imbas digital (cth: Quizlet, Wordwall) untuk fakta asas.",
+                        "Sesi bimbingan kumpulan kecil (3-5 murid) untuk mengeja dan mengingati istilah/nama penting.",
+                        "Tonton video Sejarah animasi (YouTube) & minta murid senaraikan 3 perkara yang mereka nampak."
+                    ],
+                    "panjang": [
+                        "Program 'Rakan Sejarah': Murid TP5/6 membimbing murid TP1/2 dalam mengenal pasti fakta utama.",
+                        "Modul visual (Canva/buku skrap) yang mengandungi fakta-fakta teras topik Tahun 4 untuk rujukan pantas."
+                    ]
+                },
+                "utama": { // TP3 (Tahu & Faham)
+                    "isu": "Murid di TP3 menghadapi masalah kehadiran tidak konsisten, tidak melengkapkan tugasan yang diberikan, dan kurang mahir dengan kemahiran asas Sejarah",
+                    "pendek": [
+                        "Menjalankan sesi pengajaran berfokus kepada topik yang kurang dikuasai oleh murid. Guru boleh mengadakan kelas tambahan atau pembelajaran berkelompok kecil.",
+                        "Menyediakan latihan bertema secara berterusan yang membantu murid memahami konsep sejarah melalui kaedah seperti penggunaan peta minda, teknik peta konsep, atau permainan berasaskan sejarah."
+                    ],
+                    "panjang": [
+                        "Menetapkan murid yang lebih cemerlang sebagai mentor untuk membantu murid TP3 secara berkala dalam mengulangkaji atau perbincangan topik sejarah.",
+                        "Melibatkan ibu bapa untuk memantau dan membantu perkembangan akademik murid di rumah dengan menyediakan bahan rujukan atau aktiviti pembelajaran di luar bilik darjah."
+                    ]
+                }
             },
             "tahun5": { // Fokus: Kronologi & Kepentingan
-                "fokus": [ // TP1 & TP2 (Tahu)
-                    "Fokus: 'Glosari & Garis Masa Asas'",
-                    "Murid membina 'Glosari Digital' (istilah sukar) menggunakan Google Docs/Slides secara kolaboratif.",
-                    "Guna aplikasi (Wordwall) untuk aktiviti 'Padan Suai' (tarikh, tokoh, peristiwa).",
-                    "Sesi 'Klinik Sejarah' 10 minit selepas kelas untuk murid yang masih keliru fakta asas."
-                ],
-                "utama": [ // TP3 (Tahu & Faham)
-                    "Fokus: 'Faham Susunan & Kepentingan'",
-                    "Bina 'Garis Masa Interaktif': Murid menambah 3-5 peristiwa pada templat garis masa di Canva atau Genially.",
-                    "Aktiviti 'Papan Tulis Digital' (Padlet/Jamboard): Murid menulis satu soalan (Apa/Mengapa) tentang topik.",
-                    "Simulasi/Lakonan ringkas untuk memahami proses/peristiwa (cth: proses pengisytiharan)."
-                ]
+                "fokus": { // TP1 & TP2 (Tahu)
+                    "pendek": [
+                        "Guna aplikasi (Wordwall) untuk aktiviti 'Padan Suai' (tarikh, tokoh, peristiwa).",
+                        "Murid membina 'Glosari Digital' (istilah sukar) menggunakan Google Docs/Slides secara kolaboratif.",
+                        "Sesi 'Klinik Sejarah' 10 minit untuk murid yang masih keliru fakta asas (cth: Institusi YDPA)."
+                    ],
+                    "panjang": [
+                        "Bina satu 'Garis Masa Interaktif' (Canva/Genially) yang dikongsi untuk rujukan sepanjang tahun.",
+                        "Program '5 Fakta Sehari': Guru memberi 5 fakta penting melalui Google Classroom setiap pagi."
+                    ]
+                },
+                "utama": { // TP3 (Tahu & Faham)
+                    "isu": "4 murid (6.7%) menguasai sebahagian kandungan tetapi lemah dalam aplikasi pengetahuan. Perlukan sokongan untuk naik ke TP4+.",
+                    "pendek": [
+                        "Fokus PdP pada topik yang lemah melalui sesi kumpulan kecil atau klinik Sejarah mingguan.",
+                        "Beri latihan bertema menggunakan peta minda, peta konsep, kuiz interaktif, atau aktiviti lakonan peristiwa sejarah.",
+                        "Gunakan bahan visual seperti video pendek atau infografik untuk mengukuhkan pemahaman."
+                    ],
+                    "panjang": [
+                        "Lantik murid cemerlang sebagai mentor rakan sebaya untuk membantu ulang kaji dan perbincangan sejarah.",
+                        "Libatkan ibu bapa dalam pemantauan pembelajaran di rumah dengan menyediakan bahan rujukan atau aktiviti sokongan."
+                    ]
+                }
             },
             "tahun6": { // Fokus: Hubungkait & Impak
-                "fokus": [ // TP1 & TP2 (Tahu)
-                    "Fokus: 'Kenal Konsep & Sumbangan'",
-                    "Kuiz 'Carian Imej Google': Guru paparkan 5 imej (cth: bendera ASEAN, logo Komanwel), murid namakan.",
-                    "Sesi soal jawab pantas guna 'Random Name Picker' digital untuk pastikan murid ingat fakta teras.",
-                    "Tugasan 'Lengkapkan Peta Pokok': Murid melengkapkan peta i-Think (cth: senarai sumbangan pemimpin) yang disediakan guru."
-                ],
-                "utama": [ // TP3 (Tahu & Faham)
-                    "Fokus: 'Mula Menghubungkaitkan Idea'",
-                    "Poster Digital: Murid menghasilkan poster infografik mudah (Canva/Piktochart) tentang satu konsep (cth: 'Kenapa Perpaduan Penting?').",
-                    "Forum 'Satu Minit': Murid dalam kumpulan kecil beri pendapat 1 minit tentang satu isu dan rekod guna perakam audio di telefon.",
-                    "Aktiviti 'Jigsaw Reading' (Pembacaan TerkongsI) menggunakan artikel pendek dari sumber digital."
-                ]
+                "fokus": { // TP1 & TP2 (Tahu)
+                    "pendek": [
+                        "Kuiz 'Carian Imej Google': Guru paparkan 5 imej (cth: bendera ASEAN, logo Komanwel), murid namakan.",
+                        "Tugasan 'Lengkapkan Peta Pokok': Murid melengkapkan peta i-Think (cth: senarai sumbangan pemimpin) yang disediakan guru.",
+                        "Sesi 'Siapa Saya?': Guru beri pembayang, murid teka tokoh atau konsep."
+                    ],
+                    "panjang": [
+                        "Bank Soalan Digital: Kumpulan murid menyumbang 2 soalan objektif setiap minggu ke dalam Google Forms.",
+                        "Modul 'Fakta Ekspres': Helaian fakta (fizikal atau digital) untuk setiap unit bagi rujukan pantas."
+                    ]
+                },
+                "utama": { // TP3 (Tahu & Faham)
+                    "pendek": [
+                        "Forum 'Satu Minit': Murid dalam kumpulan kecil beri pendapat 1 minit tentang satu isu dan rekod (audio/video).",
+                        "Aktiviti 'Jigsaw Reading' (Pembacaan TerkongsI) menggunakan artikel pendek dari sumber digital.",
+                        "Murid cipta 3 soalan KBAT (aras rendah) tentang topik dan kongsi di Padlet."
+                    ],
+                    "panjang": [
+                        "Poster Digital: Murid menghasilkan poster infografik mudah (Canva) tentang satu konsep (cth: 'Kenapa Perpaduan Penting?').",
+                        "Debat mini (dalam kumpulan) tentang isu-isu berkaitan kemakmuran negara."
+                    ]
+                }
             }
         };
 
@@ -418,44 +450,62 @@
                 }
 
                 // Kira jumlah murid dalam setiap kumpulan berdasarkan data AKHIR TAHUN
+                // (Logik dikemaskini untuk mengasingkan TP3)
                 const totalTP1_2 = data.cerdas.pbd.akhir[0] + data.cerdas.pbd.akhir[1] + data.cerdik.pbd.akhir[0] + data.cerdik.pbd.akhir[1];
-                const totalTP3_4 = data.cerdas.pbd.akhir[2] + data.cerdas.pbd.akhir[3] + data.cerdik.pbd.akhir[2] + data.cerdik.pbd.akhir[3];
-                // totalTP5_6 tidak perlu dikira kerana Cikgu tidak mahu paparkannya
+                // *** (DIBETULKAN) Pepijat kiraan TP3 telah dibetulkan ***
+                const totalTP3 = data.cerdas.pbd.akhir[2] + data.cerdik.pbd.akhir[2]; 
+                // totalTP4, 5, 6 tidak perlu dipaparkan
 
                 let html = '';
 
-                // Fungsi untuk membina senarai intervensi
-                const createList = (items) => items.map(item => `<li class="text-gray-700">${item}</li>`).join('');
+                // (BARU) Fungsi untuk membina senarai intervensi Jangka Pendek & Panjang
+                const createIntervensiHtml = (kategori) => {
+                    if (!kategori || !kategori.pendek || !kategori.panjang) return '<li>Tiada data intervensi.</li>';
+                    return `
+                        <div class="mt-2">
+                            <strong class="text-sm text-gray-600">Jangka Masa Pendek:</strong>
+                            <ul class="list-disc list-inside pl-4 text-gray-700 space-y-1">
+                                ${kategori.pendek.map(item => `<li>${item}</li>`).join('')}
+                            </ul>
+                        </div>
+                        <div class="mt-3">
+                            <strong class="text-sm text-gray-600">Jangka Masa Panjang:</strong>
+                            <ul class="list-disc list-inside pl-4 text-gray-700 space-y-1">
+                                ${kategori.panjang.map(item => `<li>${item}</li>`).join('')}
+                            </ul>
+                        </div>
+                    `;
+                };
 
-                // Intervensi untuk Kumpulan Fokus (TP1 & TP2)
+                // Intervensi untuk Kumpulan Fokus (TP1 & TP2) - (Kiraan murid dibuang)
                 if (totalTP1_2 > 0) {
                     html += `
                         <div class="intervention-group p-5 rounded-lg border-l-4 border-red-500 bg-red-50">
-                            <h4 class="text-lg font-semibold text-red-800 mb-2">Intervensi Kumpulan Fokus (TP1 & TP2) - ${totalTP1_2} murid</h4>
-                            <ul class="list-disc list-inside space-y-1">${createList(intervensiTahun.fokus)}</ul>
+                            <h4 class="text-lg font-semibold text-red-800 mb-2">Intervensi Kumpulan Fokus (TP1 & TP2)</h4>
+                            <div class="space-y-1">${createIntervensiHtml(intervensiTahun.fokus)}</div>
                         </div>
                     `;
                 }
 
-                // Intervensi untuk Kumpulan Utama (TP3) - TP4 juga dikira di sini tetapi intervensi fokus pada TP3
-                if (totalTP3_4 > 0) {
+                // Intervensi untuk Kumpulan Utama (TP3) - (Kiraan murid dibuang & if ditukar ke totalTP3)
+                if (totalTP3 > 0) {
                     html += `
                         <div class="intervention-group p-5 rounded-lg border-l-4 border-blue-500 bg-blue-50">
-                            <h4 class="text-lg font-semibold text-blue-800 mb-2">Intervensi Kumpulan Utama (TP3) - ${totalTP3_4} murid</h4>
-                            <ul class="list-disc list-inside space-y-1">${createList(intervensiTahun.utama)}</ul>
+                            <h4 class="text-lg font-semibold text-blue-800 mb-2">Intervensi Kumpulan Utama (TP3)</h4>
+                            <!-- (BARU) Menambah Isu Utama yang Cikgu berikan -->
+                            <p class="text-sm text-gray-800 mb-3 italic"><strong>Isu Utama:</strong> ${intervensiTahun.utama.isu || 'Tiada isu utama dinyatakan.'}</p>
+                            <div class="space-y-1">${createIntervensiHtml(intervensiTahun.utama)}</div>
                         </div>
                     `;
                 }
 
                 // (DIBUANG) Bahagian Intervensi Kumpulan Pengayaan (TP5 & TP6) telah dibuang seperti permintaan Cikgu.
 
-                // Semak jika tiada langsung murid TP1/2/3
-                if (totalTP1_2 === 0 && totalTP3_4 === 0) {
+                // Semak jika tiada langsung murid TP1/2/3 - (Logik dikemaskini guna totalTP3)
+                if (totalTP1_2 === 0 && totalTP3 === 0) {
                     html = '<p class="text-gray-500 text-center py-4">Tahniah! Tiada murid di bawah TP4. Semua murid telah melepasi tahap minimum.</p>';
                 } else if (html === '') {
-                    // Jika TP1/2=0, tapi TP3/4 > 0, mesej di atas tak keluar.
-                    // Jika TP1/2 > 0, tapi TP3/4 = 0, mesej di atas tak keluar.
-                    // Jika dua-dua 0, baru mesej tahniah keluar. Ini betul.
+                    // Tiada apa-apa untuk dipaparkan jika TP1/2=0 dan TP3=0
                 }
 
                 container.innerHTML = html;
